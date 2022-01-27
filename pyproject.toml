@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "dj-blacksmith"
+version = "0.1.0"
+description = ""
+authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+blacksmith = "^0.13.2"
+Django = "^3.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-django = "^4.5.2"
+black = "^21.12b0"
+isort = "^5.10.1"
+
+[tool.pytest.ini_options]
+norecursedirs = "docs"
+
+[tool.pyright]
+include = ["src"]
+# reportPrivateUsage = false
+# reportUnknownMemberType = false
+# reportUnknownParameterType = false
+# reportUnknownVariableType = false
+typeCheckingMode = "strict"
+
+[tool.isort]
+profile = "black"
+
+[tool.coverage.report]
+exclude_lines = [
+  "if TYPE_CHECKING:",
+  "except ImportError:",
+  "except pkg_resources.DistributionNotFound:",
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
