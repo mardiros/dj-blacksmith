@@ -15,6 +15,11 @@ lf:
 unittest test_suite=default_test_suite:
     poetry run pytest -sxv {{test_suite}}
 
+gensync:
+    poetry run python scripts/gen_unasync.py
+    poetry run isort src/dj_blacksmith/client/_sync
+    poetry run black tests/unittests/_sync
+
 lint:
     poetry run flake8
 
