@@ -8,12 +8,18 @@ authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
 python = "^3.7"
 blacksmith = "^0.13.2"
 Django = "^3.2"
+types-setuptools = "^57.4.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+pytest-asyncio = "^0.17.2"
+pytest-cov = "^3.0.0"
 pytest-django = "^4.5.2"
 black = "^21.12b0"
 isort = "^5.10.1"
+flake8 = "^4.0.1"
+mypy = "^0.931"
+django-stubs = "^1.9.0"
 
 [tool.pytest.ini_options]
 norecursedirs = "docs"
