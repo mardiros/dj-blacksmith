@@ -1,11 +1,7 @@
-from typing import Any
 from blacksmith import scan
 from django.apps import AppConfig
-from django.conf import settings
 
-
-def get_setting(name: str, default: Any= None) -> Any:
-    return getattr(settings, f"BLACKSMITH_{name}", default)
+from ._settings import get_imports
 
 
 class BlackmithConfig(AppConfig):
@@ -13,5 +9,4 @@ class BlackmithConfig(AppConfig):
     verbose_name = "Blacksmith client"
 
     def ready(self):
-        mods = get_setting("IMPORT", [])
-        scan(*mods)
+        scan(*get_imports())
