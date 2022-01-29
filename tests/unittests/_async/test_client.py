@@ -93,12 +93,14 @@ async def test_build_sd(params: Dict[str, Any]):
                         "http://": "http://letmeout:8080/",
                         "https://": "https://letmeout:8443/",
                     },
+                    "verify_certificate": False,
                 }
             },
             "expected_proxies": {
                 "http://": "http://letmeout:8080/",
                 "https://": "https://letmeout:8443/",
             },
+            "expected_verify_cert": False,
         },
         {
             "settings": {
@@ -108,10 +110,12 @@ async def test_build_sd(params: Dict[str, Any]):
                 }
             },
             "expected_proxies": None,
+            "expected_verify_cert": True,
         }
     ],
 )
 def test_client(params: Dict[str, Any]):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         cli = AsyncDjBlacksmith()
-        assert cli.cli.transport.proxies == params["expected_proxies"]  # type:ignore
+        assert cli.cli.transport.proxies == params["expected_proxies"]
+        assert cli.cli.transport.verify_certificate == params["expected_verify_cert"]

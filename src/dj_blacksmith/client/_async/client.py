@@ -40,7 +40,9 @@ class AsyncDjBlacksmith:
             raise RuntimeError(f"Client {name} does not exists")
         sd = build_sd(settings)
         self.cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
-            sd, proxies=settings.get("proxies")
+            sd,
+            proxies=settings.get("proxies"),
+            verify_certificate=settings.get("verify_certificate", True),
         )
 
     def __call__(self, request: HttpRequest):
