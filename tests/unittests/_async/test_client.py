@@ -11,7 +11,8 @@ from blacksmith import (
 )
 from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
 
-from dj_blacksmith.client._async.client import build_sd
+from django.test import override_settings
+from dj_blacksmith.client._async.client import build_sd, AsyncDjBlacksmith
 
 
 class FakeConsulTransport(AsyncAbstractTransport):
@@ -78,3 +79,39 @@ async def test_build_sd(params: Dict[str, Any]):
 
     endpoint = await sd.get_endpoint("api", "v1")
     assert endpoint == "http://api.v1:80"
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {
+                "default": {
+                    "sd": "router",
+                    "router_sd_config": {},
+                    "proxies": {
+                        "http://": "http://letmeout:8080/",
+                        "https://": "https://letmeout:8443/",
+                    },
+                }
+            },
+            "expected_proxies": {
+                "http://": "http://letmeout:8080/",
+                "https://": "https://letmeout:8443/",
+            },
+        },
+        {
+            "settings": {
+                "default": {
+                    "sd": "router",
+                    "router_sd_config": {},
+                }
+            },
+            "expected_proxies": None,
+        }
+    ],
+)
+def test_client(params: Dict[str, Any]):
+    with override_settings(BLACKSMITH_CLIENT=params["settings"]):
+        cli = AsyncDjBlacksmith()
+        assert cli.cli.transport.proxies == params["expected_proxies"]  # type:ignore

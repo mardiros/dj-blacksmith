@@ -39,7 +39,9 @@ class AsyncDjBlacksmith:
         if settings is None:
             raise RuntimeError(f"Client {name} does not exists")
         sd = build_sd(settings)
-        self.cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(sd)
+        self.cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
+            sd, proxies=settings.get("proxies")
+        )
 
     def __call__(self, request: HttpRequest):
         ...
