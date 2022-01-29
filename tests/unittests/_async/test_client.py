@@ -94,6 +94,7 @@ async def test_build_sd(params: Dict[str, Any]):
                         "https://": "https://letmeout:8443/",
                     },
                     "verify_certificate": False,
+                    "timeout": {"read": 10, "connect": 5},
                 }
             },
             "expected_proxies": {
@@ -101,6 +102,7 @@ async def test_build_sd(params: Dict[str, Any]):
                 "https://": "https://letmeout:8443/",
             },
             "expected_verify_cert": False,
+            "expected_timeout": HTTPTimeout(10, 5),
         },
         {
             "settings": {
@@ -111,7 +113,8 @@ async def test_build_sd(params: Dict[str, Any]):
             },
             "expected_proxies": None,
             "expected_verify_cert": True,
-        }
+            "expected_timeout": HTTPTimeout(30, 15),
+        },
     ],
 )
 def test_client(params: Dict[str, Any]):
@@ -119,3 +122,4 @@ def test_client(params: Dict[str, Any]):
         cli = AsyncDjBlacksmith()
         assert cli.cli.transport.proxies == params["expected_proxies"]
         assert cli.cli.transport.verify_certificate == params["expected_verify_cert"]
+        assert cli.cli.timeout == params["expected_timeout"]

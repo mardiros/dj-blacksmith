@@ -5,6 +5,7 @@ from blacksmith import (
     AsyncRouterDiscovery,
     AsyncAbstractServiceDiscovery,
     AsyncStaticDiscovery,
+    HTTPTimeout,
 )
 from django.http.request import HttpRequest
 
@@ -39,10 +40,12 @@ class AsyncDjBlacksmith:
         if settings is None:
             raise RuntimeError(f"Client {name} does not exists")
         sd = build_sd(settings)
+        timeout = settings.get("timeout", {})
         self.cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
             sd,
             proxies=settings.get("proxies"),
             verify_certificate=settings.get("verify_certificate", True),
+            timeout=HTTPTimeout(**timeout),
         )
 
     def __call__(self, request: HttpRequest):

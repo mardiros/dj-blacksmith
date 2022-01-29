@@ -1,6 +1,7 @@
 from typing import Any, Dict, Mapping, Optional, Tuple
 
 from blacksmith import (
+    HTTPTimeout,
     SyncAbstractServiceDiscovery,
     SyncClientFactory,
     SyncConsulDiscovery,
@@ -39,7 +40,13 @@ class SyncDjBlacksmith:
         if settings is None:
             raise RuntimeError(f"Client {name} does not exists")
         sd = build_sd(settings)
-        self.cli: SyncClientFactory[Any, Any] = SyncClientFactory(sd)
+        timeout = settings.get("timeout", {})
+        self.cli: SyncClientFactory[Any, Any] = SyncClientFactory(
+            sd,
+            proxies=settings.get("proxies"),
+            verify_certificate=settings.get("verify_certificate", True),
+            timeout=HTTPTimeout(**timeout),
+        )
 
     def __call__(self, request: HttpRequest):
         ...
