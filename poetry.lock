@@ -81,7 +81,7 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "blacksmith"
-version = "0.13.2"
+version = "0.13.3"
 description = "REST API Client designed for microservices"
 category = "main"
 optional = false
@@ -628,7 +628,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "11bd65052537e9bb7d6d095ef912faf64d4a3d82143f00db87c2b510761310d8"
+content-hash = "74597a0e06d7d58a661a14fe4ee549d76ea3f7286bb90e165dc3aa82c25b0d6d"
 
 [metadata.files]
 anyio = [
@@ -652,8 +652,8 @@ black = [
     {file = "black-21.12b0.tar.gz", hash = "sha256:77b80f693a569e2e527958459634f18df9b0ba2625ba4e0c2d5da5be42e6f2b3"},
 ]
 blacksmith = [
-    {file = "blacksmith-0.13.2-py3-none-any.whl", hash = "sha256:ab918bdf39c025ac71e579c0e4938d983ef4f7d9354620a6315f19839e17ba3a"},
-    {file = "blacksmith-0.13.2.tar.gz", hash = "sha256:3d04b83f0d3410eddd267b22783f173e5607ceaddd74253e58931174fb365950"},
+    {file = "blacksmith-0.13.3-py3-none-any.whl", hash = "sha256:2d6cee54e8698e3ae87127c4c1c9a53127bb0509587345d7e8d0e6029b74856c"},
+    {file = "blacksmith-0.13.3.tar.gz", hash = "sha256:aaf982b8033060373c660057d5556e1ad55c17be16fd42f67e06b093da610d30"},
 ]
 certifi = [
     {file = "certifi-2021.10.8-py2.py3-none-any.whl", hash = "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"},
