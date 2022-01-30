@@ -89,6 +89,21 @@ def test_build_sd(params: Dict[str, Any]):
     "params",
     [
         {
+            "settings": {"sd": "STATIC"},
+            "expected_message": "Unkown service discovery STATIC",
+        }
+    ],
+)
+def test_build_sd_errors(params: Dict[str, Any]):
+    with pytest.raises(RuntimeError) as ctx:
+        build_sd(params["settings"])
+    assert str(ctx.value) == params["expected_message"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
             "settings": {
                 "default": {
                     "sd": "router",
@@ -127,6 +142,21 @@ def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
         assert cli.transport.proxies == params["expected_proxies"]
         assert cli.transport.verify_certificate == params["expected_verify_cert"]
         assert cli.timeout == params["expected_timeout"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {"default": {"sd": "router", "router_sd_config": {}}},
+            "expected_message": "Client clicli does not exists",
+        }
+    ],
+)
+def test_client_factory_errors(params: Dict[str, Any]):
+    with pytest.raises(RuntimeError) as ctx:
+        client_factory("clicli")
+    assert str(ctx.value) == params["expected_message"]
 
 
 @pytest.mark.parametrize(
