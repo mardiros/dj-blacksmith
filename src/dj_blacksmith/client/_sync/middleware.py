@@ -1,13 +1,14 @@
 import abc
 from typing import Any, Mapping
+
 from blacksmith import (
-    AsyncHTTPMiddleware,
-    AsyncCircuitBreakerMiddleware,
     PrometheusMetrics,
+    SyncCircuitBreakerMiddleware,
+    SyncHTTPMiddleware,
 )
 
 
-class AsyncHTTPMiddlewareBuilder(abc.ABC):
+class SyncHTTPMiddlewareBuilder(abc.ABC):
     """Build middleware from settings."""
     def __init__(
         self,
@@ -18,14 +19,14 @@ class AsyncHTTPMiddlewareBuilder(abc.ABC):
         self.metrics = metrics
 
     @abc.abstractmethod
-    def build(self) -> AsyncHTTPMiddleware:
+    def build(self) -> SyncHTTPMiddleware:
         """Build the middleware from the settings, optionnaly use the metrics."""
 
 
-class AsyncCircuitBreakerMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
+class SyncCircuitBreakerMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
     """Build Circuit Breaker middleware."""
-    def build(self) -> AsyncHTTPMiddleware:
-        return AsyncCircuitBreakerMiddleware(
+    def build(self) -> SyncHTTPMiddleware:
+        return SyncCircuitBreakerMiddleware(
             **self.settings.get("circuit_breaker", {}),
             metrics=self.metrics,
         )

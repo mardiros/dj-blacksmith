@@ -1,17 +1,21 @@
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 from blacksmith import (
     AsyncClientFactory,
     AsyncConsulDiscovery,
+    AsyncHTTPMiddleware,
     AsyncRouterDiscovery,
     AsyncAbstractServiceDiscovery,
     AsyncStaticDiscovery,
     HTTPTimeout,
+    PrometheusMetrics,
 )
 from blacksmith.typing import ClientName
 from django.http.request import HttpRequest
+from django.utils.module_loading import import_string
 
 
 from dj_blacksmith._settings import get_clients
+from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
 
 
 def build_sd(
@@ -35,6 +39,16 @@ def build_sd(
         raise RuntimeError(f"Unkown service discovery {sd_setting}")
 
 
+def build_middlewares(
+    metrics: PrometheusMetrics,
+    settings: Mapping[str, Any]
+) -> Iterable[AsyncHTTPMiddleware]:
+    middlewares: List[str] = settings.get("middlewares", [])
+    for middleware in middlewares:
+        cls: Type[AsyncHTTPMiddlewareBuilder] = import_string(middleware)
+        yield cls(settings, metrics).build()
+
+
 async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
     settings = get_clients().get(name)
     if settings is None:
@@ -47,6 +61,9 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
         verify_certificate=settings.get("verify_certificate", True),
         timeout=HTTPTimeout(**timeout),
     )
+    metrics = PrometheusMetrics()
+    for middleware in build_middlewares(metrics, settings):
+        cli.add_middleware(middleware)
     await cli.initialize()
     return cli
 

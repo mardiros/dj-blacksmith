@@ -121,7 +121,7 @@ async def test_build_sd(params: Dict[str, Any]):
         },
     ],
 )
-async def test_client_factory(params: Dict[str, Any]):
+async def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         cli = await client_factory()
         assert cli.transport.proxies == params["expected_proxies"]
@@ -140,7 +140,9 @@ async def test_client_factory(params: Dict[str, Any]):
         },
     ],
 )
-async def test_reuse_client_factory(params: Dict[str, Any], req: Any):
+async def test_reuse_client_factory(
+    params: Dict[str, Any], req: Any, prometheus_registry: Any
+):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         dj_cli = AsyncDjBlacksmithClient(req)
         cli = await dj_cli()
@@ -150,4 +152,3 @@ async def test_reuse_client_factory(params: Dict[str, Any], req: Any):
 
         cli2 = await dj_cli("default")
         assert cli is cli2
-

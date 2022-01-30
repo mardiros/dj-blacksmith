@@ -1,16 +1,21 @@
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
 from blacksmith import (
     HTTPTimeout,
+    PrometheusMetrics,
     SyncAbstractServiceDiscovery,
     SyncClientFactory,
     SyncConsulDiscovery,
+    SyncHTTPMiddleware,
     SyncRouterDiscovery,
     SyncStaticDiscovery,
 )
+from blacksmith.typing import ClientName
 from django.http.request import HttpRequest
+from django.utils.module_loading import import_string
 
 from dj_blacksmith._settings import get_clients
+from dj_blacksmith.client._sync.middleware import SyncHTTPMiddlewareBuilder
 
 
 def build_sd(
@@ -34,19 +39,46 @@ def build_sd(
         raise RuntimeError(f"Unkown service discovery {sd_setting}")
 
 
-class SyncDjBlacksmith:
-    def __init__(self, name: str = "default") -> None:
-        settings = get_clients().get(name)
-        if settings is None:
-            raise RuntimeError(f"Client {name} does not exists")
-        sd = build_sd(settings)
-        timeout = settings.get("timeout", {})
-        self.cli: SyncClientFactory[Any, Any] = SyncClientFactory(
-            sd,
-            proxies=settings.get("proxies"),
-            verify_certificate=settings.get("verify_certificate", True),
-            timeout=HTTPTimeout(**timeout),
-        )
+def build_middlewares(
+    metrics: PrometheusMetrics,
+    settings: Mapping[str, Any]
+) -> Iterable[SyncHTTPMiddleware]:
+    middlewares: List[str] = settings.get("middlewares", [])
+    for middleware in middlewares:
+        cls: Type[SyncHTTPMiddlewareBuilder] = import_string(middleware)
+        yield cls(settings, metrics).build()
 
-    def __call__(self, request: HttpRequest):
-        ...
+
+def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
+    settings = get_clients().get(name)
+    if settings is None:
+        raise RuntimeError(f"Client {name} does not exists")
+    sd = build_sd(settings)
+    timeout = settings.get("timeout", {})
+    cli: SyncClientFactory[Any, Any] = SyncClientFactory(
+        sd,
+        proxies=settings.get("proxies"),
+        verify_certificate=settings.get("verify_certificate", True),
+        timeout=HTTPTimeout(**timeout),
+    )
+    metrics = PrometheusMetrics()
+    for middleware in build_middlewares(metrics, settings):
+        cli.add_middleware(middleware)
+    cli.initialize()
+    return cli
+
+
+class SyncDjBlacksmithClient:
+    clients: Dict[str, SyncClientFactory[Any, Any]] = {}
+
+    def __init__(self, request: HttpRequest):
+        self.request = request
+
+    def __call__(
+        self, client_name: ClientName = "default"
+    ) -> SyncClientFactory[Any, Any]:
+
+        if client_name not in self.clients:
+            self.clients[client_name] = client_factory(client_name)
+
+        return self.clients[client_name]

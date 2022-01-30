@@ -5,3 +5,9 @@ try:
 except pkg_resources.DistributionNotFound:
     # read the doc does not support poetry
     pass
+
+
+from .client._async.middleware import AsyncCircuitBreakerMiddlewareBuilder
+
+
+__all__ = ["AsyncCircuitBreakerMiddlewareBuilder"]
