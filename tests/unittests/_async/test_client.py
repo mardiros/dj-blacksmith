@@ -12,7 +12,11 @@ from blacksmith import (
 from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
 
 from django.test import override_settings
-from dj_blacksmith.client._async.client import build_sd, AsyncDjBlacksmith
+from dj_blacksmith.client._async.client import (
+    AsyncDjBlacksmithClient,
+    build_sd,
+    client_factory,
+)
 
 
 class FakeConsulTransport(AsyncAbstractTransport):
@@ -117,9 +121,33 @@ async def test_build_sd(params: Dict[str, Any]):
         },
     ],
 )
-def test_client(params: Dict[str, Any]):
+async def test_client_factory(params: Dict[str, Any]):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
-        cli = AsyncDjBlacksmith()
-        assert cli.cli.transport.proxies == params["expected_proxies"]
-        assert cli.cli.transport.verify_certificate == params["expected_verify_cert"]
-        assert cli.cli.timeout == params["expected_timeout"]
+        cli = await client_factory()
+        assert cli.transport.proxies == params["expected_proxies"]
+        assert cli.transport.verify_certificate == params["expected_verify_cert"]
+        assert cli.timeout == params["expected_timeout"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {"default": {"sd": "router", "router_sd_config": {}}},
+            "expected_proxies": None,
+            "expected_verify_cert": True,
+            "expected_timeout": HTTPTimeout(30, 15),
+        },
+    ],
+)
+async def test_reuse_client_factory(params: Dict[str, Any], req: Any):
+    with override_settings(BLACKSMITH_CLIENT=params["settings"]):
+        dj_cli = AsyncDjBlacksmithClient(req)
+        cli = await dj_cli()
+        assert cli.transport.proxies == params["expected_proxies"]
+        assert cli.transport.verify_certificate == params["expected_verify_cert"]
+        assert cli.timeout == params["expected_timeout"]
+
+        cli2 = await dj_cli("default")
+        assert cli is cli2
+

@@ -1,9 +1,9 @@
 from typing import Any, Dict
-from blacksmith import AsyncClientFactory
 
+from blacksmith import AsyncClientFactory
 from blacksmith.domain.registry import ApiRoutes, registry
 
-from dj_blacksmith.client._async.client import AsyncDjBlacksmith
+from dj_blacksmith.client._async.client import AsyncDjBlacksmithClient
 
 
 def test_import():
@@ -17,6 +17,7 @@ def test_import():
     assert dummies.resource.path == "/dummies"
 
 
-async def test_async_dj_blacksmith():
-    bmcli = AsyncDjBlacksmith()
-    assert isinstance(bmcli.cli, AsyncClientFactory)
+async def test_async_dj_blacksmith(req: Any):
+    bmcli = AsyncDjBlacksmithClient(req.get("/"))
+    cli = await bmcli()
+    assert isinstance(cli, AsyncClientFactory)

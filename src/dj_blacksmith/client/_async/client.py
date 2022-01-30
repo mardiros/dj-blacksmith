@@ -7,6 +7,7 @@ from blacksmith import (
     AsyncStaticDiscovery,
     HTTPTimeout,
 )
+from blacksmith.typing import ClientName
 from django.http.request import HttpRequest
 
 
@@ -34,19 +35,33 @@ def build_sd(
         raise RuntimeError(f"Unkown service discovery {sd_setting}")
 
 
-class AsyncDjBlacksmith:
-    def __init__(self, name: str = "default") -> None:
-        settings = get_clients().get(name)
-        if settings is None:
-            raise RuntimeError(f"Client {name} does not exists")
-        sd = build_sd(settings)
-        timeout = settings.get("timeout", {})
-        self.cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
-            sd,
-            proxies=settings.get("proxies"),
-            verify_certificate=settings.get("verify_certificate", True),
-            timeout=HTTPTimeout(**timeout),
-        )
+async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
+    settings = get_clients().get(name)
+    if settings is None:
+        raise RuntimeError(f"Client {name} does not exists")
+    sd = build_sd(settings)
+    timeout = settings.get("timeout", {})
+    cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
+        sd,
+        proxies=settings.get("proxies"),
+        verify_certificate=settings.get("verify_certificate", True),
+        timeout=HTTPTimeout(**timeout),
+    )
+    await cli.initialize()
+    return cli
 
-    def __call__(self, request: HttpRequest):
-        ...
+
+class AsyncDjBlacksmithClient:
+    clients: Dict[str, AsyncClientFactory[Any, Any]] = {}
+
+    def __init__(self, request: HttpRequest):
+        self.request = request
+
+    async def __call__(
+        self, client_name: ClientName = "default"
+    ) -> AsyncClientFactory[Any, Any]:
+
+        if client_name not in self.clients:
+            self.clients[client_name] = await client_factory(client_name)
+
+        return self.clients[client_name]
