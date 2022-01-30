@@ -17,7 +17,7 @@ version = "0.1.0"
 
 [tool.poetry.dependencies]
 Django = "^3.2"
-blacksmith = "^0.13.3"
+blacksmith = {version = "^0.13.3", extras = ["prometheus"]}
 python = "^3.7"
 types-setuptools = "^57.4.7"
 

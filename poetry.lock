@@ -89,6 +89,7 @@ python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
 httpx = ">=0.21.1,<0.22.0"
+prometheus-client = {version = ">=0.12.0,<0.13.0", optional = true, markers = "extra == \"prometheus\""}
 purgatory-circuitbreaker = ">=0.7.2,<0.8.0"
 pydantic = ">=1.8.2,<2.0.0"
 typing-extensions = ">=4.0.1,<5.0.0"
@@ -383,6 +384,17 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "prometheus-client"
+version = "0.12.0"
+description = "Python client for the Prometheus monitoring system."
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.extras]
+twisted = ["twisted"]
+
+[[package]]
 name = "purgatory-circuitbreaker"
 version = "0.7.2"
 description = "A circuit breaker implementation for asyncio"
@@ -591,7 +603,7 @@ python-versions = "*"
 
 [[package]]
 name = "types-setuptools"
-version = "57.4.7"
+version = "57.4.8"
 description = "Typing stubs for setuptools"
 category = "main"
 optional = false
@@ -628,7 +640,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "74597a0e06d7d58a661a14fe4ee549d76ea3f7286bb90e165dc3aa82c25b0d6d"
+content-hash = "fc1a159e8d733ae80d69cb11011ef65d4bca48004986c310f2a691f2a7ebd2d7"
 
 [metadata.files]
 anyio = [
@@ -807,6 +819,10 @@ pluggy = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
 ]
+prometheus-client = [
+    {file = "prometheus_client-0.12.0-py2.py3-none-any.whl", hash = "sha256:317453ebabff0a1b02df7f708efbab21e3489e7072b61cb6957230dd004a0af0"},
+    {file = "prometheus_client-0.12.0.tar.gz", hash = "sha256:1b12ba48cee33b9b0b9de64a1047cbd3c5f2d0ab6ebcead7ddda613a750ec3c5"},
+]
 purgatory-circuitbreaker = [
     {file = "purgatory-circuitbreaker-0.7.2.tar.gz", hash = "sha256:7de4282822d11fe2ebe5cb7982da932c32284134c25630ab4dacd597ffafb8a4"},
     {file = "purgatory_circuitbreaker-0.7.2-py3-none-any.whl", hash = "sha256:094b5abc10dba502532ca9510af3606cee05f7fbdf54f2c2acd6f85bc8f7f72f"},
@@ -939,8 +955,8 @@ types-pyyaml = [
     {file = "types_PyYAML-6.0.3-py3-none-any.whl", hash = "sha256:8b50294b55a9db89498cdc5a65b1b4545112b6cd1cf4465bd693d828b0282a17"},
 ]
 types-setuptools = [
-    {file = "types-setuptools-57.4.7.tar.gz", hash = "sha256:9677d969b00ec1c14552f5be2b2b47a6fbea4d0ed4de0fdcee18abdaa0cc9267"},
-    {file = "types_setuptools-57.4.7-py3-none-any.whl", hash = "sha256:ffda504687ea02d4b7751c0d1df517fbbcdc276836d90849e4f1a5f1ccd79f01"},
+    {file = "types-setuptools-57.4.8.tar.gz", hash = "sha256:d5545f2ab3dad24f5cb1c01ba74c1acb7407ab31b2618d423158fc84085160f1"},
+    {file = "types_setuptools-57.4.8-py3-none-any.whl", hash = "sha256:af8480491f9894e6081fb568811978fd7ac87434cab122a0605a32be08d98dbe"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.0.1-py3-none-any.whl", hash = "sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b"},
