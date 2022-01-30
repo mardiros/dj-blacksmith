@@ -1,0 +1,18 @@
+[*]
+trim_trailing_whitespace = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+[*.rst]
+indent_style = space
+indent_size = 3
+
+[*.toml]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
