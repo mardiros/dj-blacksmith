@@ -7,7 +7,17 @@ except pkg_resources.DistributionNotFound:
     pass
 
 
+from .client._async.client import AsyncDjBlacksmithClient
 from .client._async.middleware import AsyncCircuitBreakerMiddlewareBuilder
+from .client._sync.client import SyncDjBlacksmithClient
+from .client._sync.middleware import SyncCircuitBreakerMiddlewareBuilder
 
 
-__all__ = ["AsyncCircuitBreakerMiddlewareBuilder"]
+__all__ = [
+    # Clients
+    "AsyncDjBlacksmithClient",
+    "SyncDjBlacksmithClient",
+    # Middlewares
+    "AsyncCircuitBreakerMiddlewareBuilder",
+    "SyncCircuitBreakerMiddlewareBuilder",
+]
