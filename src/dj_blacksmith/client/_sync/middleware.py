@@ -2,12 +2,15 @@
 import abc
 from typing import Any, Mapping
 
+import aioredis
 from blacksmith import (
     PrometheusMetrics,
     SyncCircuitBreakerMiddleware,
+    SyncHTTPCacheMiddleware,
     SyncHTTPMiddleware,
     SyncPrometheusMiddleware,
 )
+from django.utils.module_loading import import_string
 
 
 class SyncHTTPMiddlewareBuilder(abc.ABC):
@@ -41,3 +44,20 @@ class SyncPrometheusMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
 
     def build(self) -> SyncPrometheusMiddleware:
         return SyncPrometheusMiddleware(metrics=self.metrics)
+
+
+class SyncHTTPCacheMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
+    """Build HTTP Cache Middleware."""
+
+    def build(self) -> SyncHTTPCacheMiddleware:
+
+        settings = self.settings["http_cache"]
+        cache = aioredis.from_url(settings["redis"])  # type: ignore
+        policy = import_string(settings.get("policy", "blacksmith.CacheControlPolicy"))
+        srlz = import_string(settings.get("serializer", "blacksmith.JsonSerializer"))
+        return SyncHTTPCacheMiddleware(
+            cache=cache,  # type: ignore
+            policy=policy(),
+            metrics=self.metrics,
+            serializer=srlz(),
+        )

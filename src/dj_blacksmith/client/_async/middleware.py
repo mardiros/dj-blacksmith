@@ -1,11 +1,14 @@
 """Build Blacksmith middlewares from Django settings."""
 import abc
 from typing import Any, Mapping
+import aioredis
+from django.utils.module_loading import import_string
 
 from blacksmith import (
     AsyncCircuitBreakerMiddleware,
     AsyncPrometheusMiddleware,
     AsyncHTTPMiddleware,
+    AsyncHTTPCacheMiddleware,
     PrometheusMetrics,
 )
 
@@ -41,3 +44,20 @@ class AsyncPrometheusMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
 
     def build(self) -> AsyncPrometheusMiddleware:
         return AsyncPrometheusMiddleware(metrics=self.metrics)
+
+
+class AsyncHTTPCacheMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
+    """Build HTTP Cache Middleware."""
+
+    def build(self) -> AsyncHTTPCacheMiddleware:
+
+        settings = self.settings["http_cache"]
+        cache = aioredis.from_url(settings["redis"])  # type: ignore
+        policy = import_string(settings.get("policy", "blacksmith.CacheControlPolicy"))
+        srlz = import_string(settings.get("serializer", "blacksmith.JsonSerializer"))
+        return AsyncHTTPCacheMiddleware(
+            cache=cache,  # type: ignore
+            policy=policy(),
+            metrics=self.metrics,
+            serializer=srlz(),
+        )

@@ -11,11 +11,13 @@ from .client._async.client import AsyncDjBlacksmithClient
 from .client._async.middleware import (
     AsyncCircuitBreakerMiddlewareBuilder,
     AsyncPrometheusMiddlewareBuilder,
+    AsyncHTTPCacheMiddlewareBuilder,
 )
 from .client._sync.client import SyncDjBlacksmithClient
 from .client._sync.middleware import (
     SyncCircuitBreakerMiddlewareBuilder,
     SyncPrometheusMiddlewareBuilder,
+    SyncHTTPCacheMiddlewareBuilder,
 )
 
 __all__ = [
@@ -27,4 +29,6 @@ __all__ = [
     "SyncCircuitBreakerMiddlewareBuilder",
     "AsyncPrometheusMiddlewareBuilder",
     "SyncPrometheusMiddlewareBuilder",
+    "AsyncHTTPCacheMiddlewareBuilder",
+    "SyncHTTPCacheMiddlewareBuilder",
 ]

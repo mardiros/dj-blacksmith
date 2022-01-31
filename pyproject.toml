@@ -20,6 +20,8 @@ Django = "^3.2"
 blacksmith = {version = "^0.13.3", extras = ["prometheus"]}
 python = "^3.7"
 types-setuptools = "^57.4.7"
+aioredis = "^2.0.1"
+redis = "^4.1.2"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
