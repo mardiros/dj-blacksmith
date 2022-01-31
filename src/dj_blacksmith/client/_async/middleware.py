@@ -6,6 +6,7 @@ from django.utils.module_loading import import_string
 
 from blacksmith import (
     AsyncCircuitBreakerMiddleware,
+    AsyncHTTPAddHeadersMiddleware,
     AsyncPrometheusMiddleware,
     AsyncHTTPMiddleware,
     AsyncHTTPCacheMiddleware,
@@ -61,3 +62,10 @@ class AsyncHTTPCacheMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
             metrics=self.metrics,
             serializer=srlz(),
         )
+
+class AsyncHTTPAddHeadersMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
+    """Add header."""
+
+    def build(self) -> AsyncHTTPAddHeadersMiddleware:
+        headers = self.settings["http_headers"]
+        return AsyncHTTPAddHeadersMiddleware(headers)

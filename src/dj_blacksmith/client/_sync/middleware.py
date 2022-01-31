@@ -6,6 +6,7 @@ import aioredis
 from blacksmith import (
     PrometheusMetrics,
     SyncCircuitBreakerMiddleware,
+    SyncHTTPAddHeadersMiddleware,
     SyncHTTPCacheMiddleware,
     SyncHTTPMiddleware,
     SyncPrometheusMiddleware,
@@ -61,3 +62,10 @@ class SyncHTTPCacheMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
             metrics=self.metrics,
             serializer=srlz(),
         )
+
+class SyncHTTPAddHeadersMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
+    """Add header."""
+
+    def build(self) -> SyncHTTPAddHeadersMiddleware:
+        headers = self.settings["http_headers"]
+        return SyncHTTPAddHeadersMiddleware(headers)

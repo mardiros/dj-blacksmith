@@ -6,6 +6,7 @@ from prometheus_client import CollectorRegistry  # type: ignore
 
 from dj_blacksmith.client._async.middleware import (
     AsyncCircuitBreakerMiddlewareBuilder,
+    AsyncHTTPAddHeadersMiddlewareBuilder,
     AsyncHTTPCacheMiddlewareBuilder,
     AsyncPrometheusMiddlewareBuilder,
 )
@@ -71,7 +72,7 @@ class DummyPolicy(CacheControlPolicy):
     [
         {
             "settings": {"http_cache": {"redis": "redis://red/42"}},
-            "metrics": PrometheusMetrics(registry=CollectorRegistry()),
+            "metrics": None,
             "expected_redis": {"db": 42, "host": "red"},
             "expected_policy": "CacheControlPolicy",
             "expected_serializer": "JsonSerializer",
@@ -84,7 +85,7 @@ class DummyPolicy(CacheControlPolicy):
                     "serializer": "tests.unittests.fixtures.DummySerializer",
                 }
             },
-            "metrics": PrometheusMetrics(registry=CollectorRegistry()),
+            "metrics": None,
             "expected_redis": {"db": 42, "host": "red"},
             "expected_policy": "DummyCachePolicy",
             "expected_serializer": "DummySerializer",
@@ -103,3 +104,20 @@ def test_build_cache(params: Dict[str, Any]):
         cache._serializer.__class__.__name__  # type: ignore
         == params["expected_serializer"]
     )
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {"http_headers": {"Accept-Language": "ja"}},
+            "metrics": None,
+        },
+    ],
+)
+def test_add_headers(params: Dict[str, Any]):
+    builder = AsyncHTTPAddHeadersMiddlewareBuilder(
+        params["settings"], params["metrics"]
+    )
+    cache = builder.build()
+    assert cache.headers == params["settings"]["http_headers"]
