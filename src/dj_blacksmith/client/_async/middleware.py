@@ -1,17 +1,18 @@
 """Build Blacksmith middlewares from Django settings."""
 import abc
 from typing import Any, Mapping
-import aioredis
-from django.utils.module_loading import import_string
 
+import aioredis
 from blacksmith import (
     AsyncCircuitBreakerMiddleware,
     AsyncHTTPAddHeadersMiddleware,
-    AsyncPrometheusMiddleware,
-    AsyncHTTPMiddleware,
+    AsyncHTTPBearerMiddleware,
     AsyncHTTPCacheMiddleware,
+    AsyncHTTPMiddleware,
+    AsyncPrometheusMiddleware,
     PrometheusMetrics,
 )
+from django.utils.module_loading import import_string
 
 
 class AsyncHTTPMiddlewareBuilder(abc.ABC):
@@ -63,9 +64,18 @@ class AsyncHTTPCacheMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
             serializer=srlz(),
         )
 
+
 class AsyncHTTPAddHeadersMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
     """Add header."""
 
     def build(self) -> AsyncHTTPAddHeadersMiddleware:
         headers = self.settings["http_headers"]
         return AsyncHTTPAddHeadersMiddleware(headers)
+
+
+class AsyncHTTPBearerMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
+    """Add header."""
+
+    def build(self) -> AsyncHTTPBearerMiddleware:
+        headers = self.settings["bearer_token"]
+        return AsyncHTTPBearerMiddleware(headers)

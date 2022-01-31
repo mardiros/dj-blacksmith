@@ -8,7 +8,6 @@ from blacksmith.domain.model.middleware.http_cache import (
 
 
 class DummyCachePolicy(AbstractCachePolicy):
-
     def handle_request(self, req: HTTPRequest, client_name: str, path: str):
         """A function to decide if the http request is cachable."""
         return False

@@ -10,14 +10,14 @@ except pkg_resources.DistributionNotFound:
 from .client._async.client import AsyncDjBlacksmithClient
 from .client._async.middleware import (
     AsyncCircuitBreakerMiddlewareBuilder,
-    AsyncPrometheusMiddlewareBuilder,
     AsyncHTTPCacheMiddlewareBuilder,
+    AsyncPrometheusMiddlewareBuilder,
 )
 from .client._sync.client import SyncDjBlacksmithClient
 from .client._sync.middleware import (
     SyncCircuitBreakerMiddlewareBuilder,
-    SyncPrometheusMiddlewareBuilder,
     SyncHTTPCacheMiddlewareBuilder,
+    SyncPrometheusMiddlewareBuilder,
 )
 
 __all__ = [

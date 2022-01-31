@@ -7,6 +7,7 @@ from prometheus_client import CollectorRegistry  # type: ignore
 from dj_blacksmith.client._async.middleware import (
     AsyncCircuitBreakerMiddlewareBuilder,
     AsyncHTTPAddHeadersMiddlewareBuilder,
+    AsyncHTTPBearerMiddlewareBuilder,
     AsyncHTTPCacheMiddlewareBuilder,
     AsyncPrometheusMiddlewareBuilder,
 )
@@ -121,3 +122,19 @@ def test_add_headers(params: Dict[str, Any]):
     )
     cache = builder.build()
     assert cache.headers == params["settings"]["http_headers"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {"bearer_token": "abc"},
+            "metrics": None,
+            "expected": {"Authorization": "Bearer abc"},
+        },
+    ],
+)
+def test_add_bearer_token(params: Dict[str, Any]):
+    builder = AsyncHTTPBearerMiddlewareBuilder(params["settings"], params["metrics"])
+    cache = builder.build()
+    assert cache.headers == params["expected"]

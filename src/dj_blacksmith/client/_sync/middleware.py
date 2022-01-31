@@ -7,6 +7,7 @@ from blacksmith import (
     PrometheusMetrics,
     SyncCircuitBreakerMiddleware,
     SyncHTTPAddHeadersMiddleware,
+    SyncHTTPBearerMiddleware,
     SyncHTTPCacheMiddleware,
     SyncHTTPMiddleware,
     SyncPrometheusMiddleware,
@@ -63,9 +64,18 @@ class SyncHTTPCacheMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
             serializer=srlz(),
         )
 
+
 class SyncHTTPAddHeadersMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
     """Add header."""
 
     def build(self) -> SyncHTTPAddHeadersMiddleware:
         headers = self.settings["http_headers"]
         return SyncHTTPAddHeadersMiddleware(headers)
+
+
+class SyncHTTPBearerMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
+    """Add header."""
+
+    def build(self) -> SyncHTTPBearerMiddleware:
+        headers = self.settings["bearer_token"]
+        return SyncHTTPBearerMiddleware(headers)
