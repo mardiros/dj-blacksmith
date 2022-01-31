@@ -12,7 +12,6 @@ from .client._async.middleware import AsyncCircuitBreakerMiddlewareBuilder
 from .client._sync.client import SyncDjBlacksmithClient
 from .client._sync.middleware import SyncCircuitBreakerMiddlewareBuilder
 
-
 __all__ = [
     # Clients
     "AsyncDjBlacksmithClient",

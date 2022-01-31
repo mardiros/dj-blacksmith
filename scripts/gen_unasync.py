@@ -28,6 +28,7 @@ unasync.unasync_files(
             "tests/unittests/_sync",
             additional_replacements={
                 "_async": "_sync",
+                "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder": "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",  # noqa
             },
         ),
     ],

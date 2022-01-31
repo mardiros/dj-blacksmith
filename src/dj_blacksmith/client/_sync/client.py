@@ -40,8 +40,8 @@ def build_sd(
 
 
 def build_middlewares(
+    settings: Mapping[str, Any],
     metrics: PrometheusMetrics,
-    settings: Mapping[str, Any]
 ) -> Iterable[SyncHTTPMiddleware]:
     middlewares: List[str] = settings.get("middlewares", [])
     for middleware in middlewares:
@@ -62,7 +62,7 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
         timeout=HTTPTimeout(**timeout),
     )
     metrics = PrometheusMetrics()
-    for middleware in build_middlewares(metrics, settings):
+    for middleware in build_middlewares(settings, metrics):
         cli.add_middleware(middleware)
     cli.initialize()
     return cli

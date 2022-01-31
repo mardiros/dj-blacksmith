@@ -1,10 +1,11 @@
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
+
 from blacksmith import (
+    AsyncAbstractServiceDiscovery,
     AsyncClientFactory,
     AsyncConsulDiscovery,
     AsyncHTTPMiddleware,
     AsyncRouterDiscovery,
-    AsyncAbstractServiceDiscovery,
     AsyncStaticDiscovery,
     HTTPTimeout,
     PrometheusMetrics,
@@ -12,7 +13,6 @@ from blacksmith import (
 from blacksmith.typing import ClientName
 from django.http.request import HttpRequest
 from django.utils.module_loading import import_string
-
 
 from dj_blacksmith._settings import get_clients
 from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
@@ -40,8 +40,8 @@ def build_sd(
 
 
 def build_middlewares(
+    settings: Mapping[str, Any],
     metrics: PrometheusMetrics,
-    settings: Mapping[str, Any]
 ) -> Iterable[AsyncHTTPMiddleware]:
     middlewares: List[str] = settings.get("middlewares", [])
     for middleware in middlewares:
@@ -62,7 +62,7 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
         timeout=HTTPTimeout(**timeout),
     )
     metrics = PrometheusMetrics()
-    for middleware in build_middlewares(metrics, settings):
+    for middleware in build_middlewares(settings, metrics):
         cli.add_middleware(middleware)
     await cli.initialize()
     return cli

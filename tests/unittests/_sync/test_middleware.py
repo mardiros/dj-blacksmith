@@ -1,8 +1,8 @@
 from typing import Any, Dict
-from blacksmith import PrometheusMetrics
-from prometheus_client import CollectorRegistry  # type: ignore
 
 import pytest
+from blacksmith import PrometheusMetrics
+from prometheus_client import CollectorRegistry  # type: ignore
 
 from dj_blacksmith.client._sync.middleware import SyncCircuitBreakerMiddlewareBuilder
 

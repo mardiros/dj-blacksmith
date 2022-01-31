@@ -1,6 +1,6 @@
-import pytest
 from typing import Any, Dict
 
+import pytest
 from blacksmith import AsyncCircuitBreakerMiddleware, AsyncClientFactory
 from blacksmith.domain.registry import ApiRoutes, registry
 

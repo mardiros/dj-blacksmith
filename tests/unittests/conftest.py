@@ -1,8 +1,5 @@
-
-import pytest
-
 import prometheus_client  # type: ignore
-
+import pytest
 from django.test import RequestFactory
 
 

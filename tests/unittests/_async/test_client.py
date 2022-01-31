@@ -3,17 +3,21 @@ from typing import Any, Dict
 import pytest
 from blacksmith import (
     AsyncAbstractTransport,
+    AsyncCircuitBreakerMiddleware,
     AsyncClientFactory,
     AsyncStaticDiscovery,
     HTTPRequest,
     HTTPResponse,
     HTTPTimeout,
+    PrometheusMetrics,
 )
 from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
-
 from django.test import override_settings
+from prometheus_client import CollectorRegistry  # type: ignore
+
 from dj_blacksmith.client._async.client import (
     AsyncDjBlacksmithClient,
+    build_middlewares,
     build_sd,
     client_factory,
 )
@@ -105,6 +109,25 @@ async def test_build_sd_errors(params: Dict[str, Any]):
     [
         {
             "settings": {
+                "middlewares": [
+                    "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
+                ]
+            },
+            "metrics": PrometheusMetrics(registry=CollectorRegistry()),
+            "expected": [AsyncCircuitBreakerMiddleware],
+        },
+    ],
+)
+async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
+    mdlws = build_middlewares(params["settings"], params["metrics"])
+    assert [type(mdlw) for mdlw in mdlws] == params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {
                 "default": {
                     "sd": "router",
                     "router_sd_config": {},
@@ -112,10 +135,14 @@ async def test_build_sd_errors(params: Dict[str, Any]):
                         "http://": "http://letmeout:8080/",
                         "https://": "https://letmeout:8443/",
                     },
+                    "middlewares": [
+                        "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
+                    ],
                     "verify_certificate": False,
                     "timeout": {"read": 10, "connect": 5},
                 }
             },
+            "expected_middlewares": [AsyncCircuitBreakerMiddleware],
             "expected_proxies": {
                 "http://": "http://letmeout:8080/",
                 "https://": "https://letmeout:8443/",
@@ -130,6 +157,7 @@ async def test_build_sd_errors(params: Dict[str, Any]):
                     "router_sd_config": {},
                 }
             },
+            "expected_middlewares": [],
             "expected_proxies": None,
             "expected_verify_cert": True,
             "expected_timeout": HTTPTimeout(30, 15),
@@ -142,6 +170,7 @@ async def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
         assert cli.transport.proxies == params["expected_proxies"]
         assert cli.transport.verify_certificate == params["expected_verify_cert"]
         assert cli.timeout == params["expected_timeout"]
+        assert [type(m) for m in cli.middlewares] == params["expected_middlewares"]
 
 
 @pytest.mark.parametrize(

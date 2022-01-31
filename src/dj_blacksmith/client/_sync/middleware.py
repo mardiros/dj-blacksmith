@@ -10,6 +10,7 @@ from blacksmith import (
 
 class SyncHTTPMiddlewareBuilder(abc.ABC):
     """Build middleware from settings."""
+
     def __init__(
         self,
         settings: Mapping[str, Any],
@@ -25,6 +26,7 @@ class SyncHTTPMiddlewareBuilder(abc.ABC):
 
 class SyncCircuitBreakerMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
     """Build Circuit Breaker middleware."""
+
     def build(self) -> SyncHTTPMiddleware:
         return SyncCircuitBreakerMiddleware(
             **self.settings.get("circuit_breaker", {}),
