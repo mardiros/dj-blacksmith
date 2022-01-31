@@ -5,6 +5,7 @@ from blacksmith import (
     AsyncAbstractTransport,
     AsyncCircuitBreakerMiddleware,
     AsyncClientFactory,
+    AsyncPrometheusMiddleware,
     AsyncStaticDiscovery,
     HTTPRequest,
     HTTPResponse,
@@ -111,10 +112,11 @@ async def test_build_sd_errors(params: Dict[str, Any]):
             "settings": {
                 "middlewares": [
                     "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
+                    "dj_blacksmith.AsyncPrometheusMiddlewareBuilder",
                 ]
             },
             "metrics": PrometheusMetrics(registry=CollectorRegistry()),
-            "expected": [AsyncCircuitBreakerMiddleware],
+            "expected": [AsyncCircuitBreakerMiddleware, AsyncPrometheusMiddleware],
         },
     ],
 )

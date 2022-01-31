@@ -5,6 +5,7 @@ from blacksmith import (
     SyncAbstractTransport,
     SyncCircuitBreakerMiddleware,
     SyncClientFactory,
+    SyncPrometheusMiddleware,
     SyncStaticDiscovery,
     HTTPRequest,
     HTTPResponse,
@@ -111,10 +112,11 @@ def test_build_sd_errors(params: Dict[str, Any]):
             "settings": {
                 "middlewares": [
                     "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
+                    "dj_blacksmith.SyncPrometheusMiddlewareBuilder",
                 ]
             },
             "metrics": PrometheusMetrics(registry=CollectorRegistry()),
-            "expected": [SyncCircuitBreakerMiddleware],
+            "expected": [SyncCircuitBreakerMiddleware, SyncPrometheusMiddleware],
         },
     ],
 )

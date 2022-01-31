@@ -1,3 +1,4 @@
+"""Build Blacksmith middlewares from Django settings."""
 import abc
 from typing import Any, Mapping
 
@@ -5,6 +6,7 @@ from blacksmith import (
     PrometheusMetrics,
     SyncCircuitBreakerMiddleware,
     SyncHTTPMiddleware,
+    SyncPrometheusMiddleware,
 )
 
 
@@ -25,10 +27,17 @@ class SyncHTTPMiddlewareBuilder(abc.ABC):
 
 
 class SyncCircuitBreakerMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
-    """Build Circuit Breaker middleware."""
+    """Build Circuit Breaker Middleware."""
 
     def build(self) -> SyncHTTPMiddleware:
         return SyncCircuitBreakerMiddleware(
             **self.settings.get("circuit_breaker", {}),
             metrics=self.metrics,
         )
+
+
+class SyncPrometheusMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
+    """Build Prometheus Middleware."""
+
+    def build(self) -> SyncPrometheusMiddleware:
+        return SyncPrometheusMiddleware(metrics=self.metrics)

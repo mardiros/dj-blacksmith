@@ -4,7 +4,10 @@ import pytest
 from blacksmith import PrometheusMetrics
 from prometheus_client import CollectorRegistry  # type: ignore
 
-from dj_blacksmith.client._sync.middleware import SyncCircuitBreakerMiddlewareBuilder
+from dj_blacksmith.client._sync.middleware import (
+    SyncCircuitBreakerMiddlewareBuilder,
+    SyncPrometheusMiddlewareBuilder,
+)
 
 
 @pytest.mark.parametrize(
@@ -39,3 +42,18 @@ def test_build_circuit_breaker(params: Dict[str, Any]):
         cbreaker.circuit_breaker.default_threshold  # type: ignore
         == params["expected_threshold"]
     )
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {},
+            "metrics": PrometheusMetrics(registry=CollectorRegistry()),
+        },
+    ],
+)
+def test_build_prometheus(params: Dict[str, Any]):
+    builder = SyncPrometheusMiddlewareBuilder(params["settings"], params["metrics"])
+    prom = builder.build()
+    assert prom.metrics == params["metrics"]
