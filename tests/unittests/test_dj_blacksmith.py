@@ -1,10 +1,10 @@
 from typing import Any, Dict
 
 import pytest
-from blacksmith import AsyncCircuitBreakerMiddleware, AsyncClientFactory
+from blacksmith import AsyncCircuitBreakerMiddleware
 from blacksmith.domain.registry import ApiRoutes, registry
 
-from dj_blacksmith.client._async.client import AsyncDjBlacksmithClient
+from dj_blacksmith.client._async.client import AsyncClientProxy, AsyncDjBlacksmithClient
 
 
 def test_import():
@@ -36,5 +36,7 @@ async def test_async_dj_blacksmith(
 ):
     bmcli = AsyncDjBlacksmithClient(req.get("/"))
     cli = await bmcli(params["client"])
-    assert isinstance(cli, AsyncClientFactory)
-    assert [type(mid) for mid in cli.middlewares] == params["middlewares"]
+    assert isinstance(cli, AsyncClientProxy)
+    assert [type(mid) for mid in cli.client_factory.middlewares] == params[
+        "middlewares"
+    ]

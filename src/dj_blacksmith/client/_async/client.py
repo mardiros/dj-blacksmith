@@ -2,6 +2,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
 from blacksmith import (
     AsyncAbstractServiceDiscovery,
+    AsyncClient,
     AsyncClientFactory,
     AsyncConsulDiscovery,
     AsyncHTTPMiddleware,
@@ -68,17 +69,29 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
     return cli
 
 
+class AsyncClientProxy:
+    def __init__(
+        self, client_factory: AsyncClientFactory[Any, Any], request: HttpRequest
+    ):
+        self.client_factory = client_factory
+        self.request = request
+
+    async def __call__(self, client_name: ClientName) -> AsyncClient[Any, Any]:
+        cli = await self.client_factory(client_name)
+        return cli
+
+
 class AsyncDjBlacksmithClient:
-    clients: Dict[str, AsyncClientFactory[Any, Any]] = {}
+    client_factories: Dict[str, AsyncClientFactory[Any, Any]] = {}
 
     def __init__(self, request: HttpRequest):
         self.request = request
 
     async def __call__(
-        self, client_name: ClientName = "default"
-    ) -> AsyncClientFactory[Any, Any]:
+        self, factory_name: str = "default"
+    ) -> AsyncClientProxy:
 
-        if client_name not in self.clients:
-            self.clients[client_name] = await client_factory(client_name)
+        if factory_name not in self.client_factories:
+            self.client_factories[factory_name] = await client_factory(factory_name)
 
-        return self.clients[client_name]
+        return AsyncClientProxy(self.client_factories[factory_name], self.request)

@@ -4,6 +4,7 @@ from blacksmith import (
     HTTPTimeout,
     PrometheusMetrics,
     SyncAbstractServiceDiscovery,
+    SyncClient,
     SyncClientFactory,
     SyncConsulDiscovery,
     SyncHTTPMiddleware,
@@ -68,17 +69,29 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
     return cli
 
 
+class SyncClientProxy:
+    def __init__(
+        self, client_factory: SyncClientFactory[Any, Any], request: HttpRequest
+    ):
+        self.client_factory = client_factory
+        self.request = request
+
+    def __call__(self, client_name: ClientName) -> SyncClient[Any, Any]:
+        cli = self.client_factory(client_name)
+        return cli
+
+
 class SyncDjBlacksmithClient:
-    clients: Dict[str, SyncClientFactory[Any, Any]] = {}
+    client_factories: Dict[str, SyncClientFactory[Any, Any]] = {}
 
     def __init__(self, request: HttpRequest):
         self.request = request
 
     def __call__(
-        self, client_name: ClientName = "default"
-    ) -> SyncClientFactory[Any, Any]:
+        self, factory_name: str = "default"
+    ) -> SyncClientProxy:
 
-        if client_name not in self.clients:
-            self.clients[client_name] = client_factory(client_name)
+        if factory_name not in self.client_factories:
+            self.client_factories[factory_name] = client_factory(factory_name)
 
-        return self.clients[client_name]
+        return SyncClientProxy(self.client_factories[factory_name], self.request)

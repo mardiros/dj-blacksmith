@@ -207,9 +207,10 @@ def test_reuse_client_factory(
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         dj_cli = SyncDjBlacksmithClient(req)
         cli = dj_cli()
-        assert cli.transport.proxies == params["expected_proxies"]
-        assert cli.transport.verify_certificate == params["expected_verify_cert"]
-        assert cli.timeout == params["expected_timeout"]
+        factory = cli.client_factory
+        assert factory.transport.proxies == params["expected_proxies"]
+        assert factory.transport.verify_certificate == params["expected_verify_cert"]
+        assert factory.timeout == params["expected_timeout"]
 
         cli2 = dj_cli("default")
-        assert cli is cli2
+        assert cli.client_factory is cli2.client_factory
