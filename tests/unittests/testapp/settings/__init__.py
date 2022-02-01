@@ -21,5 +21,9 @@ BLACKSMITH_CLIENT: Dict[str, Any] = {
         "middlewares": [
             "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
         ],
+        "forwarded_headers": ["Authorization", "Accept-Language"],
+        "middleware_factories": [
+            "dj_blacksmith.AsyncForwardHeaderFactoryBuilder",
+        ],
     },
 }

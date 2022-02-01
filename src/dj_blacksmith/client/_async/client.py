@@ -88,27 +88,34 @@ def middleware_factories(name: str = "default"):
 
 class AsyncClientProxy:
     def __init__(
-        self, client_factory: AsyncClientFactory[Any, Any], request: HttpRequest
+        self,
+        client_factory: AsyncClientFactory[Any, Any],
+        middlewares: List[AsyncHTTPMiddleware],
     ):
         self.client_factory = client_factory
-        self.request = request
+        self.middlewares = middlewares
 
     async def __call__(self, client_name: ClientName) -> AsyncClient[Any, Any]:
         cli = await self.client_factory(client_name)
+        for middleware in self.middlewares:
+            cli.add_middleware(middleware)
         return cli
 
 
 class AsyncDjBlacksmithClient:
     client_factories: Dict[str, AsyncClientFactory[Any, Any]] = {}
+    middleware_factories: Dict[str, List[AsyncAbstractMiddlewareFactoryBuilder]] = {}
 
     def __init__(self, request: HttpRequest):
         self.request = request
 
-    async def __call__(
-        self, factory_name: str = "default"
-    ) -> AsyncClientProxy:
+    async def __call__(self, factory_name: str = "default") -> AsyncClientProxy:
 
         if factory_name not in self.client_factories:
             self.client_factories[factory_name] = await client_factory(factory_name)
+            self.middleware_factories[factory_name] = middleware_factories(factory_name)
 
-        return AsyncClientProxy(self.client_factories[factory_name], self.request)
+        return AsyncClientProxy(
+            self.client_factories[factory_name],
+            [m(self.request) for m in self.middleware_factories[factory_name]],
+        )

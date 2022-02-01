@@ -30,6 +30,7 @@ unasync.unasync_files(
                 "_async": "_sync",
                 "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder": "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",  # noqa
                 "dj_blacksmith.AsyncPrometheusMiddlewareBuilder": "dj_blacksmith.SyncPrometheusMiddlewareBuilder",  # noqa
+                "dummy_async_client_factory": "dummy_sync_client_factory",
             },
         ),
     ],

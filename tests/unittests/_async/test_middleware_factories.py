@@ -1,7 +1,7 @@
 from typing import Any, Dict
-from django.test import RequestFactory
 
 import pytest
+from django.test import RequestFactory
 
 from dj_blacksmith.client._async.middleware_factory import (
     AsyncForwardHeaderFactoryBuilder,

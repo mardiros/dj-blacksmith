@@ -88,27 +88,34 @@ def middleware_factories(name: str = "default"):
 
 class SyncClientProxy:
     def __init__(
-        self, client_factory: SyncClientFactory[Any, Any], request: HttpRequest
+        self,
+        client_factory: SyncClientFactory[Any, Any],
+        middlewares: List[SyncHTTPMiddleware],
     ):
         self.client_factory = client_factory
-        self.request = request
+        self.middlewares = middlewares
 
     def __call__(self, client_name: ClientName) -> SyncClient[Any, Any]:
         cli = self.client_factory(client_name)
+        for middleware in self.middlewares:
+            cli.add_middleware(middleware)
         return cli
 
 
 class SyncDjBlacksmithClient:
     client_factories: Dict[str, SyncClientFactory[Any, Any]] = {}
+    middleware_factories: Dict[str, List[SyncAbstractMiddlewareFactoryBuilder]] = {}
 
     def __init__(self, request: HttpRequest):
         self.request = request
 
-    def __call__(
-        self, factory_name: str = "default"
-    ) -> SyncClientProxy:
+    def __call__(self, factory_name: str = "default") -> SyncClientProxy:
 
         if factory_name not in self.client_factories:
             self.client_factories[factory_name] = client_factory(factory_name)
+            self.middleware_factories[factory_name] = middleware_factories(factory_name)
 
-        return SyncClientProxy(self.client_factories[factory_name], self.request)
+        return SyncClientProxy(
+            self.client_factories[factory_name],
+            [m(self.request) for m in self.middleware_factories[factory_name]],
+        )

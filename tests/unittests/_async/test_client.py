@@ -5,6 +5,7 @@ from blacksmith import (
     AsyncAbstractTransport,
     AsyncCircuitBreakerMiddleware,
     AsyncClientFactory,
+    AsyncHTTPAddHeadersMiddleware,
     AsyncPrometheusMiddleware,
     AsyncStaticDiscovery,
     HTTPRequest,
@@ -17,6 +18,7 @@ from django.test import override_settings
 from prometheus_client import CollectorRegistry  # type: ignore
 
 from dj_blacksmith.client._async.client import (
+    AsyncClientProxy,
     AsyncDjBlacksmithClient,
     build_middlewares,
     build_middlewares_factories,
@@ -256,3 +258,17 @@ def test_middleware_factories(params: Dict[str, Any]):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         factories = middleware_factories()
     assert factories == [DummyMiddlewareFactory1({}), DummyMiddlewareFactory2({})]
+
+
+async def test_client_proxy_header_injection(
+    dummy_async_client_factory: AsyncClientFactory[Any, Any]
+):
+    prox = AsyncClientProxy(
+        dummy_async_client_factory,
+        [
+            AsyncHTTPAddHeadersMiddleware(headers={"x-mdlwr-1": "1"}),
+        ],
+    )
+    cli = await prox("dummy")
+    resp = await cli.dummies.get({"name": "foo"})
+    assert resp.http_response.headers == {"Foo": "Bar"}  # type: ignore
