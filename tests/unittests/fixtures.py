@@ -1,9 +1,15 @@
-from typing import Any, List, Tuple
+from typing import Any, List, Mapping, Tuple
 
+from blacksmith import AsyncHTTPAddHeadersMiddleware, AsyncHTTPMiddleware
 from blacksmith.domain.model import HTTPRequest, HTTPResponse
 from blacksmith.domain.model.middleware.http_cache import (
     AbstractCachePolicy,
     AbstractSerializer,
+)
+from django.http import HttpRequest
+
+from dj_blacksmith.client._async.middleware_factory import (
+    AsyncAbstractMiddlewareFactoryBuilder,
 )
 
 
@@ -34,3 +40,25 @@ class DummySerializer(AbstractSerializer):
     @staticmethod
     def dumps(obj: Any) -> str:
         return ""
+
+
+class DummyMiddlewareFactory1(AsyncAbstractMiddlewareFactoryBuilder):
+    def __init__(self, settings: Mapping[str, Any]):
+        pass
+
+    def __call__(self, request: HttpRequest) -> AsyncHTTPMiddleware:
+        return AsyncHTTPAddHeadersMiddleware(headers={"x-mdlwr-1": "1"})
+
+    def __eq__(self, ob: Any) -> bool:
+        return ob.__class__ == self.__class__
+
+
+class DummyMiddlewareFactory2(AsyncAbstractMiddlewareFactoryBuilder):
+    def __init__(self, settings: Mapping[str, Any]):
+        pass
+
+    def __call__(self, request: HttpRequest) -> AsyncHTTPMiddleware:
+        return AsyncHTTPAddHeadersMiddleware(headers={"x-mdlwr-2": "2"})
+
+    def __eq__(self, ob: Any) -> bool:
+        return ob.__class__ == self.__class__

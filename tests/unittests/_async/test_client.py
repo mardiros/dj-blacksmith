@@ -19,9 +19,12 @@ from prometheus_client import CollectorRegistry  # type: ignore
 from dj_blacksmith.client._async.client import (
     AsyncDjBlacksmithClient,
     build_middlewares,
+    build_middlewares_factories,
     build_sd,
     client_factory,
+    middleware_factories,
 )
+from tests.unittests.fixtures import DummyMiddlewareFactory1, DummyMiddlewareFactory2
 
 
 class FakeConsulTransport(AsyncAbstractTransport):
@@ -214,3 +217,42 @@ async def test_reuse_client_factory(
 
         cli2 = await dj_cli("default")
         assert cli.client_factory is cli2.client_factory
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {
+                "middleware_factories": [
+                    "tests.unittests.fixtures.DummyMiddlewareFactory1",
+                    "tests.unittests.fixtures.DummyMiddlewareFactory2",
+                ]
+            }
+        }
+    ],
+)
+def test_build_middlewares_factories(params: Dict[str, Any]):
+    factories = list(build_middlewares_factories(params["settings"]))
+    assert factories == [DummyMiddlewareFactory1({}), DummyMiddlewareFactory2({})]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {
+                "default": {
+                    "middleware_factories": [
+                        "tests.unittests.fixtures.DummyMiddlewareFactory1",
+                        "tests.unittests.fixtures.DummyMiddlewareFactory2",
+                    ]
+                }
+            }
+        }
+    ],
+)
+def test_middleware_factories(params: Dict[str, Any]):
+    with override_settings(BLACKSMITH_CLIENT=params["settings"]):
+        factories = middleware_factories()
+    assert factories == [DummyMiddlewareFactory1({}), DummyMiddlewareFactory2({})]

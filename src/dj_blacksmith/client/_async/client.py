@@ -17,6 +17,9 @@ from django.utils.module_loading import import_string
 
 from dj_blacksmith._settings import get_clients
 from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
+from dj_blacksmith.client._async.middleware_factory import (
+    AsyncAbstractMiddlewareFactoryBuilder,
+)
 
 
 def build_sd(
@@ -67,6 +70,20 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
         cli.add_middleware(middleware)
     await cli.initialize()
     return cli
+
+
+def build_middlewares_factories(
+    settings: Mapping[str, Any],
+) -> Iterable[AsyncAbstractMiddlewareFactoryBuilder]:
+    middlewares: List[str] = settings.get("middleware_factories", [])
+    for middleware in middlewares:
+        cls: Type[AsyncAbstractMiddlewareFactoryBuilder] = import_string(middleware)
+        yield cls(settings)
+
+
+def middleware_factories(name: str = "default"):
+    settings = get_clients()[name]
+    return list(build_middlewares_factories(settings))
 
 
 class AsyncClientProxy:

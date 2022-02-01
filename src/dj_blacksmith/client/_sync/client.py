@@ -17,6 +17,9 @@ from django.utils.module_loading import import_string
 
 from dj_blacksmith._settings import get_clients
 from dj_blacksmith.client._sync.middleware import SyncHTTPMiddlewareBuilder
+from dj_blacksmith.client._sync.middleware_factory import (
+    SyncAbstractMiddlewareFactoryBuilder,
+)
 
 
 def build_sd(
@@ -67,6 +70,20 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
         cli.add_middleware(middleware)
     cli.initialize()
     return cli
+
+
+def build_middlewares_factories(
+    settings: Mapping[str, Any],
+) -> Iterable[SyncAbstractMiddlewareFactoryBuilder]:
+    middlewares: List[str] = settings.get("middleware_factories", [])
+    for middleware in middlewares:
+        cls: Type[SyncAbstractMiddlewareFactoryBuilder] = import_string(middleware)
+        yield cls(settings)
+
+
+def middleware_factories(name: str = "default"):
+    settings = get_clients()[name]
+    return list(build_middlewares_factories(settings))
 
 
 class SyncClientProxy:
