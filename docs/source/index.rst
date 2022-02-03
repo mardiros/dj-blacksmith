@@ -11,6 +11,9 @@ Welcome to dj-blacksmith's documentation!
    :caption: Users Documentation:
 
    user/introduction
+   user/configuration
+   user/middlewares
+   user/middleware_factories
    user/api
    user/changelog
 

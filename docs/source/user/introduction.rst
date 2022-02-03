@@ -16,23 +16,16 @@ Or adding to a project using poetry by using
    poetry add dj_blacksmith
 
 
-After wath, the library has to be configured throw the pyramid
-configurator using the command
+After wath, the library has to be configured as an installed app in the
+django project.
 
 .. code-block:: python
 
-   with Configurator(settings=settings) as config:
-      config.include('dj_blacksmith')
-
-
-in the code or using the `.ini` file configuration
-
-
-.. code-block:: ini
-
-   pyramid.includes =
-      dj_blacksmith
-
+   INSTALLED_APPS = [
+      ...,
+      "dj_blacksmith"
+      ...,
+   ]
 
 
 To finalize the client factory, the configuration is required and will be
