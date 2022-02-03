@@ -119,21 +119,21 @@ Disable Certificate Verification
    | Great power came with great responsabilities.
 
 
-::
 
-   Updating the collection parser
-   ------------------------------
+Updating the collection parser
+------------------------------
 
-   While consuming API that does not do bared collection, a collection parser
-   has to be set in blacksmith to change the ``collection_get`` method that
-   deserialize and build back the pyrantic model.
+While consuming API that does not do bared collection, a collection parser
+has to be set in blacksmith to change the ``collection_get`` method that
+deserialize and build back the pyrantic model.
 
-   .. code-block:: python
+.. code-block:: python
 
-      BLACKSMITH_CLIENT = {
-         "default": {
-         },
-      }
+   BLACKSMITH_CLIENT = {
+      "default": {
+         "path.to.MyCollectionParser"
+      },
+   }
 
 
 Middlewares

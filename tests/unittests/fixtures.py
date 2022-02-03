@@ -1,10 +1,13 @@
 from typing import Any, List, Mapping, Tuple
 
-from blacksmith import AsyncHTTPAddHeadersMiddleware, AsyncHTTPMiddleware
-from blacksmith.domain.model import HTTPRequest, HTTPResponse
-from blacksmith.domain.model.middleware.http_cache import (
+from blacksmith import (
     AbstractCachePolicy,
     AbstractSerializer,
+    AsyncHTTPAddHeadersMiddleware,
+    AsyncHTTPMiddleware,
+    CollectionParser,
+    HTTPRequest,
+    HTTPResponse,
 )
 from django.http import HttpRequest
 
@@ -62,3 +65,7 @@ class DummyMiddlewareFactory2(AsyncAbstractMiddlewareFactoryBuilder):
 
     def __eq__(self, ob: Any) -> bool:
         return ob.__class__ == self.__class__
+
+
+class DummyCollectionParser(CollectionParser):
+    pass

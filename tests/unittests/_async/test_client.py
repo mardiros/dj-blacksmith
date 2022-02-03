@@ -8,6 +8,7 @@ from blacksmith import (
     AsyncHTTPAddHeadersMiddleware,
     AsyncPrometheusMiddleware,
     AsyncStaticDiscovery,
+    CollectionParser,
     HTTPRequest,
     HTTPResponse,
     HTTPTimeout,
@@ -23,10 +24,15 @@ from dj_blacksmith.client._async.client import (
     build_middlewares,
     build_middlewares_factories,
     build_sd,
+    build_collection_parser,
     client_factory,
     middleware_factories,
 )
-from tests.unittests.fixtures import DummyMiddlewareFactory1, DummyMiddlewareFactory2
+from tests.unittests.fixtures import (
+    DummyMiddlewareFactory1,
+    DummyMiddlewareFactory2,
+    DummyCollectionParser,
+)
 
 
 class FakeConsulTransport(AsyncAbstractTransport):
@@ -114,6 +120,26 @@ async def test_build_sd_errors(params: Dict[str, Any]):
     "params",
     [
         {
+            "settings": {},
+            "expected": CollectionParser,
+        },
+        {
+            "settings": {
+                "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",
+            },
+            "expected": DummyCollectionParser,
+        }
+    ],
+)
+def test_build_collection_parser(params: Dict[str, Any]):
+    collection_parser = build_collection_parser(params["settings"])
+    assert collection_parser is params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
             "settings": {
                 "middlewares": [
                     "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
@@ -146,6 +172,7 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
                         "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
                     ],
                     "verify_certificate": False,
+                    "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",  # noqa
                     "timeout": {"read": 10, "connect": 5},
                 }
             },
@@ -156,6 +183,7 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
             },
             "expected_verify_cert": False,
             "expected_timeout": HTTPTimeout(10, 5),
+            "expected_collection_parser": DummyCollectionParser,
         },
         {
             "settings": {
@@ -168,6 +196,7 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
             "expected_proxies": None,
             "expected_verify_cert": True,
             "expected_timeout": HTTPTimeout(30, 15),
+            "expected_collection_parser": CollectionParser,
         },
     ],
 )
@@ -178,6 +207,7 @@ async def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
         assert cli.transport.verify_certificate == params["expected_verify_cert"]
         assert cli.timeout == params["expected_timeout"]
         assert [type(m) for m in cli.middlewares] == params["expected_middlewares"]
+        assert cli.collection_parser is params["expected_collection_parser"]
 
 
 @pytest.mark.parametrize(
