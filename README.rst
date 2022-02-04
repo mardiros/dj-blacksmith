@@ -1,6 +1,10 @@
 dj-blacksmith
 =============
 
+.. image:: https://readthedocs.org/projects/dj-blacksmith/badge/?version=latest
+   :target: https://dj-blacksmith.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 .. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/main.yml/badge.svg
    :target: https://github.com/mardiros/dj-blacksmith/actions/workflows/main.yml
    :alt: Continuous Integration

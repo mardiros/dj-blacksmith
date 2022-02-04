@@ -21,17 +21,17 @@ from prometheus_client import CollectorRegistry  # type: ignore
 from dj_blacksmith.client._async.client import (
     AsyncClientProxy,
     AsyncDjBlacksmithClient,
+    build_collection_parser,
     build_middlewares,
     build_middlewares_factories,
     build_sd,
-    build_collection_parser,
     client_factory,
     middleware_factories,
 )
 from tests.unittests.fixtures import (
+    DummyCollectionParser,
     DummyMiddlewareFactory1,
     DummyMiddlewareFactory2,
-    DummyCollectionParser,
 )
 
 
@@ -128,7 +128,7 @@ async def test_build_sd_errors(params: Dict[str, Any]):
                 "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",
             },
             "expected": DummyCollectionParser,
-        }
+        },
     ],
 )
 def test_build_collection_parser(params: Dict[str, Any]):

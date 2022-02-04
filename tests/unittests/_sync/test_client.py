@@ -2,16 +2,16 @@ from typing import Any, Dict
 
 import pytest
 from blacksmith import (
+    HTTPRequest,
+    HTTPResponse,
+    HTTPTimeout,
+    PrometheusMetrics,
     SyncAbstractTransport,
     SyncCircuitBreakerMiddleware,
     SyncClientFactory,
     SyncHTTPAddHeadersMiddleware,
     SyncPrometheusMiddleware,
     SyncStaticDiscovery,
-    HTTPRequest,
-    HTTPResponse,
-    HTTPTimeout,
-    PrometheusMetrics,
 )
 from blacksmith.sd._sync.adapters.consul import _registry  # type: ignore
 from django.test import override_settings
