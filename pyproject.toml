@@ -16,7 +16,7 @@ repository = "https://github.com/mardiros/dj-blacksmith"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-Django = "^3.2"
+Django = ">=3.2, <=5"
 aioredis = "^2.0.1"
 blacksmith = {version = "^0.13.3", extras = ["prometheus"]}
 python = "^3.7"
