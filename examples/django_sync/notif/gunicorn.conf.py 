@@ -1,0 +1,4 @@
+from prometheus_client.multiprocess import MultiProcessCollector, mark_process_dead
+
+def child_exit(server, worker):
+    mark_process_dead(worker.pid)
