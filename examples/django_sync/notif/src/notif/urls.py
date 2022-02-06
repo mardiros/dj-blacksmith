@@ -14,9 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from typing import List
-from django.urls import URLResolver, path
 
-from notif.views import post_notification, get_metrics
+from django.urls import URLResolver, path
+from notif.views import get_metrics, post_notification
 
 urlpatterns: List[URLResolver] = [
     path("v1/notification", post_notification),

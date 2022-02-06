@@ -1,16 +1,15 @@
-import json
 import email as emaillib
+import json
 import smtplib
 from textwrap import dedent
 
 import prometheus_client
-from prometheus_client.multiprocess import MultiProcessCollector
-from blacksmith import SyncConsulDiscovery
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from dj_blacksmith import SyncDjBlacksmithClient
-
 from notif.resources.user import User
+from prometheus_client.multiprocess import MultiProcessCollector
 
+from blacksmith import SyncConsulDiscovery
+from dj_blacksmith import SyncDjBlacksmithClient
 
 smtp_sd = SyncConsulDiscovery(unversioned_service_url_fmt="{address} {port}")
 

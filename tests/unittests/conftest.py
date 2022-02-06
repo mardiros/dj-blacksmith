@@ -2,6 +2,8 @@ from typing import Any
 
 import prometheus_client  # type: ignore
 import pytest
+from django.test import RequestFactory
+
 from blacksmith import (
     AsyncAbstractTransport,
     AsyncClientFactory,
@@ -13,7 +15,6 @@ from blacksmith import (
     SyncClientFactory,
     SyncRouterDiscovery,
 )
-from django.test import RequestFactory
 
 
 @pytest.fixture

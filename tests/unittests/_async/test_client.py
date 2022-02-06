@@ -1,6 +1,10 @@
 from typing import Any, Dict
 
 import pytest
+from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
+from django.test import override_settings
+from prometheus_client import CollectorRegistry  # type: ignore
+
 from blacksmith import (
     AsyncAbstractTransport,
     AsyncCircuitBreakerMiddleware,
@@ -14,10 +18,6 @@ from blacksmith import (
     HTTPTimeout,
     PrometheusMetrics,
 )
-from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
-from django.test import override_settings
-from prometheus_client import CollectorRegistry  # type: ignore
-
 from dj_blacksmith.client._async.client import (
     AsyncClientProxy,
     AsyncDjBlacksmithClient,

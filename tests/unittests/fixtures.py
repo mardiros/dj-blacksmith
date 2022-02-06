@@ -1,5 +1,7 @@
 from typing import Any, List, Mapping, Tuple
 
+from django.http import HttpRequest
+
 from blacksmith import (
     AbstractCachePolicy,
     AbstractSerializer,
@@ -9,8 +11,6 @@ from blacksmith import (
     HTTPRequest,
     HTTPResponse,
 )
-from django.http import HttpRequest
-
 from dj_blacksmith.client._async.middleware_factory import (
     AsyncAbstractMiddlewareFactoryBuilder,
 )

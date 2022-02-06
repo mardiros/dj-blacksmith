@@ -3,6 +3,8 @@ import abc
 from typing import Any, Mapping
 
 import aioredis
+from django.utils.module_loading import import_string
+
 from blacksmith import (
     PrometheusMetrics,
     SyncCircuitBreakerMiddleware,
@@ -12,7 +14,6 @@ from blacksmith import (
     SyncHTTPMiddleware,
     SyncPrometheusMiddleware,
 )
-from django.utils.module_loading import import_string
 
 
 class SyncHTTPMiddlewareBuilder(abc.ABC):

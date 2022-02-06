@@ -1,6 +1,10 @@
 from typing import Any, Dict
 
 import pytest
+from blacksmith.sd._sync.adapters.consul import _registry  # type: ignore
+from django.test import override_settings
+from prometheus_client import CollectorRegistry  # type: ignore
+
 from blacksmith import (
     HTTPRequest,
     HTTPResponse,
@@ -13,10 +17,6 @@ from blacksmith import (
     SyncPrometheusMiddleware,
     SyncStaticDiscovery,
 )
-from blacksmith.sd._sync.adapters.consul import _registry  # type: ignore
-from django.test import override_settings
-from prometheus_client import CollectorRegistry  # type: ignore
-
 from dj_blacksmith.client._sync.client import (
     SyncClientProxy,
     SyncDjBlacksmithClient,

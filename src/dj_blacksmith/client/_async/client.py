@@ -1,5 +1,9 @@
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
+from blacksmith.typing import ClientName
+from django.http.request import HttpRequest
+from django.utils.module_loading import import_string
+
 from blacksmith import (
     AbstractCollectionParser,
     AsyncAbstractServiceDiscovery,
@@ -12,10 +16,6 @@ from blacksmith import (
     HTTPTimeout,
     PrometheusMetrics,
 )
-from blacksmith.typing import ClientName
-from django.http.request import HttpRequest
-from django.utils.module_loading import import_string
-
 from dj_blacksmith._settings import get_clients
 from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
 from dj_blacksmith.client._async.middleware_factory import (

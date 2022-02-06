@@ -1,9 +1,9 @@
 from typing import Any, Dict
 
 import pytest
-from blacksmith import AsyncCircuitBreakerMiddleware
 from blacksmith.domain.registry import ApiRoutes, registry
 
+from blacksmith import AsyncCircuitBreakerMiddleware
 from dj_blacksmith.client._async.client import AsyncClientProxy, AsyncDjBlacksmithClient
 
 
