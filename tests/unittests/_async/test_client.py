@@ -148,14 +148,15 @@ def test_build_collection_parser(params: Dict[str, Any]):
         },
         {
             "settings": {
-                "transport": "tests.unittests.fixtures.AsyncDummyTransport",
+                "BLACKSMITH_TRANSPORT": "tests.unittests.fixtures.AsyncDummyTransport",
             },
             "expected": AsyncDummyTransport,
         },
     ],
 )
 def test_build_transport(params: Dict[str, Any]):
-    transport = build_transport(params["settings"])
+    with override_settings(**params["settings"]):
+        transport = build_transport()
     assert transport is params["expected"]
 
 
@@ -184,19 +185,21 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
     [
         {
             "settings": {
-                "default": {
-                    "sd": "router",
-                    "router_sd_config": {},
-                    "proxies": {
-                        "http://": "http://letmeout:8080/",
-                        "https://": "https://letmeout:8443/",
+                "BLACKSMITH_CLIENT": {
+                    "default": {
+                        "sd": "router",
+                        "router_sd_config": {},
+                        "proxies": {
+                            "http://": "http://letmeout:8080/",
+                            "https://": "https://letmeout:8443/",
+                        },
+                        "middlewares": [
+                            "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
+                        ],
+                        "verify_certificate": False,
+                        "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",  # noqa
+                        "timeout": {"read": 10, "connect": 5},
                     },
-                    "middlewares": [
-                        "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
-                    ],
-                    "verify_certificate": False,
-                    "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",  # noqa
-                    "timeout": {"read": 10, "connect": 5},
                 }
             },
             "expected_middlewares": [AsyncCircuitBreakerMiddleware],
@@ -211,11 +214,13 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
         },
         {
             "settings": {
-                "default": {
-                    "sd": "router",
-                    "router_sd_config": {},
-                    "transport": "tests.unittests.fixtures.AsyncDummyTransport",
-                }
+                "BLACKSMITH_CLIENT": {
+                    "default": {
+                        "sd": "router",
+                        "router_sd_config": {},
+                    },
+                },
+                "BLACKSMITH_TRANSPORT": "tests.unittests.fixtures.AsyncDummyTransport",
             },
             "expected_middlewares": [],
             "expected_proxies": None,
@@ -226,10 +231,12 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
         },
         {
             "settings": {
-                "default": {
-                    "sd": "router",
-                    "router_sd_config": {},
-                }
+                "BLACKSMITH_CLIENT": {
+                    "default": {
+                        "sd": "router",
+                        "router_sd_config": {},
+                    },
+                },
             },
             "expected_middlewares": [],
             "expected_proxies": None,
@@ -241,7 +248,7 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
     ],
 )
 async def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
-    with override_settings(BLACKSMITH_CLIENT=params["settings"]):
+    with override_settings(**params["settings"]):
         cli = await client_factory()
         assert cli.transport.proxies == params["expected_proxies"]
         assert cli.transport.verify_certificate == params["expected_verify_cert"]

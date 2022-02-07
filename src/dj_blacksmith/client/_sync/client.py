@@ -17,7 +17,7 @@ from blacksmith import (
     SyncRouterDiscovery,
     SyncStaticDiscovery,
 )
-from dj_blacksmith._settings import get_clients
+from dj_blacksmith._settings import get_clients, get_transport
 from dj_blacksmith.client._sync.middleware import SyncHTTPMiddlewareBuilder
 from dj_blacksmith.client._sync.middleware_factory import (
     SyncAbstractMiddlewareFactoryBuilder,
@@ -52,10 +52,11 @@ def build_collection_parser(settings: Dict[str, Any]) -> Type[AbstractCollection
     return cls
 
 
-def build_transport(settings: Dict[str, Any]) -> Optional[Type[SyncAbstractTransport]]:
-    if "transport" not in settings:
+def build_transport() -> Optional[Type[SyncAbstractTransport]]:
+    transport = get_transport()
+    if not transport:
         return None
-    cls = import_string(settings["transport"])
+    cls = import_string(transport)
     return cls
 
 
@@ -76,7 +77,7 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
     sd = build_sd(settings)
     timeout = settings.get("timeout", {})
     collection_parser = build_collection_parser(settings)
-    transport = build_transport(settings)
+    transport = build_transport()
     cli: SyncClientFactory[Any, Any] = SyncClientFactory(
         sd,
         proxies=settings.get("proxies"),

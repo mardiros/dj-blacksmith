@@ -17,7 +17,7 @@ from blacksmith import (
     HTTPTimeout,
     PrometheusMetrics,
 )
-from dj_blacksmith._settings import get_clients
+from dj_blacksmith._settings import get_clients, get_transport
 from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
 from dj_blacksmith.client._async.middleware_factory import (
     AsyncAbstractMiddlewareFactoryBuilder,
@@ -52,10 +52,11 @@ def build_collection_parser(settings: Dict[str, Any]) -> Type[AbstractCollection
     return cls
 
 
-def build_transport(settings: Dict[str, Any]) -> Optional[Type[AsyncAbstractTransport]]:
-    if "transport" not in settings:
+def build_transport() -> Optional[Type[AsyncAbstractTransport]]:
+    transport = get_transport()
+    if not transport:
         return None
-    cls = import_string(settings["transport"])
+    cls = import_string(transport)
     return cls
 
 
@@ -76,7 +77,7 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
     sd = build_sd(settings)
     timeout = settings.get("timeout", {})
     collection_parser = build_collection_parser(settings)
-    transport = build_transport(settings)
+    transport = build_transport()
     cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
         sd,
         proxies=settings.get("proxies"),

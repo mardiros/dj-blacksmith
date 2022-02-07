@@ -13,3 +13,7 @@ def get_imports() -> List[str]:
 
 def get_clients() -> Dict[str, Any]:
     return get_setting("CLIENT", {})
+
+
+def get_transport() -> str:
+    return get_setting("TRANSPORT")
