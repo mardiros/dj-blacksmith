@@ -2,6 +2,7 @@ from typing import Any, Dict
 
 import pytest
 from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
+from blacksmith.service._async.adapters.httpx import AsyncHttpxTransport
 from django.test import override_settings
 from prometheus_client import CollectorRegistry  # type: ignore
 
@@ -206,6 +207,22 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
             "expected_verify_cert": False,
             "expected_timeout": HTTPTimeout(10, 5),
             "expected_collection_parser": DummyCollectionParser,
+            "expected_transport": AsyncHttpxTransport,
+        },
+        {
+            "settings": {
+                "default": {
+                    "sd": "router",
+                    "router_sd_config": {},
+                    "transport": "tests.unittests.fixtures.AsyncDummyTransport",
+                }
+            },
+            "expected_middlewares": [],
+            "expected_proxies": None,
+            "expected_verify_cert": True,
+            "expected_timeout": HTTPTimeout(30, 15),
+            "expected_collection_parser": CollectionParser,
+            "expected_transport": AsyncDummyTransport,
         },
         {
             "settings": {
@@ -219,6 +236,7 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
             "expected_verify_cert": True,
             "expected_timeout": HTTPTimeout(30, 15),
             "expected_collection_parser": CollectionParser,
+            "expected_transport": AsyncHttpxTransport,
         },
     ],
 )
@@ -230,6 +248,7 @@ async def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
         assert cli.timeout == params["expected_timeout"]
         assert [type(m) for m in cli.middlewares] == params["expected_middlewares"]
         assert cli.collection_parser is params["expected_collection_parser"]
+        assert isinstance(cli.transport, params["expected_transport"])
 
 
 @pytest.mark.parametrize(
