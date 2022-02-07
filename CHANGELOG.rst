@@ -1,3 +1,7 @@
+0.3.0 - Released on 2022-02-07
+------------------------------
+* Add a setting ``BLACKSMITH_TRANSPORT`` for overriding the transport
+
 0.2.0 - Released on 2022-02-04
 ------------------------------
 * Add the collection parser
