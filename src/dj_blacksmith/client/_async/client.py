@@ -7,6 +7,7 @@ from django.utils.module_loading import import_string
 from blacksmith import (
     AbstractCollectionParser,
     AsyncAbstractServiceDiscovery,
+    AsyncAbstractTransport,
     AsyncClient,
     AsyncClientFactory,
     AsyncConsulDiscovery,
@@ -48,6 +49,13 @@ def build_collection_parser(settings: Dict[str, Any]) -> Type[AbstractCollection
     cls = import_string(
         settings.get("collection_parser", "blacksmith.CollectionParser")
     )
+    return cls
+
+
+def build_transport(settings: Dict[str, Any]) -> Optional[Type[AsyncAbstractTransport]]:
+    if "transport" not in settings:
+        return None
+    cls = import_string(settings["transport"])
     return cls
 
 

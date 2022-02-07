@@ -5,9 +5,11 @@ from django.http.request import HttpRequest
 from django.utils.module_loading import import_string
 
 from blacksmith import (
+    AbstractCollectionParser,
     HTTPTimeout,
     PrometheusMetrics,
     SyncAbstractServiceDiscovery,
+    SyncAbstractTransport,
     SyncClient,
     SyncClientFactory,
     SyncConsulDiscovery,
@@ -22,7 +24,9 @@ from dj_blacksmith.client._sync.middleware_factory import (
 )
 
 
-def build_sd(settings: Mapping[str, Mapping[str, Any]]) -> SyncAbstractServiceDiscovery:
+def build_sd(
+    settings: Mapping[str, Mapping[str, Any]]
+) -> SyncAbstractServiceDiscovery:
     sd_setting = settings.get("sd")
     if sd_setting == "consul":
         return SyncConsulDiscovery(**settings["consul_sd_config"])
@@ -41,6 +45,20 @@ def build_sd(settings: Mapping[str, Mapping[str, Any]]) -> SyncAbstractServiceDi
         raise RuntimeError(f"Unkown service discovery {sd_setting}")
 
 
+def build_collection_parser(settings: Dict[str, Any]) -> Type[AbstractCollectionParser]:
+    cls = import_string(
+        settings.get("collection_parser", "blacksmith.CollectionParser")
+    )
+    return cls
+
+
+def build_transport(settings: Dict[str, Any]) -> Optional[Type[SyncAbstractTransport]]:
+    if "transport" not in settings:
+        return None
+    cls = import_string(settings["transport"])
+    return cls
+
+
 def build_middlewares(
     settings: Mapping[str, Any],
     metrics: PrometheusMetrics,
@@ -57,11 +75,13 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
         raise RuntimeError(f"Client {name} does not exists")
     sd = build_sd(settings)
     timeout = settings.get("timeout", {})
+    collection_parser = build_collection_parser(settings)
     cli: SyncClientFactory[Any, Any] = SyncClientFactory(
         sd,
         proxies=settings.get("proxies"),
         verify_certificate=settings.get("verify_certificate", True),
         timeout=HTTPTimeout(**timeout),
+        collection_parser=collection_parser,
     )
     metrics = PrometheusMetrics()
     for middleware in build_middlewares(settings, metrics):

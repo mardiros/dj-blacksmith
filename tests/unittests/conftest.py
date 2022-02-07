@@ -5,16 +5,12 @@ import pytest
 from django.test import RequestFactory
 
 from blacksmith import (
-    AsyncAbstractTransport,
     AsyncClientFactory,
     AsyncRouterDiscovery,
-    HTTPRequest,
-    HTTPResponse,
-    HTTPTimeout,
-    SyncAbstractTransport,
     SyncClientFactory,
     SyncRouterDiscovery,
 )
+from .fixtures import AsyncDummyTransport, SyncDummyTransport
 
 
 @pytest.fixture
@@ -26,30 +22,6 @@ def req():
 def prometheus_registry():
     prometheus_client.REGISTRY = prometheus_client.CollectorRegistry()
     yield prometheus_client.REGISTRY
-
-
-class AsyncDummyTransport(AsyncAbstractTransport):
-    async def __call__(
-        self,
-        req: HTTPRequest,
-        client_name: str,
-        path: str,
-        timeout: HTTPTimeout,
-    ) -> HTTPResponse:
-        """This is the next function of the middleware."""
-        return HTTPResponse(200, {"Foo": "Bar"}, {"id": "1", "name": "alive"})
-
-
-class SyncDummyTransport(SyncAbstractTransport):
-    def __call__(
-        self,
-        req: HTTPRequest,
-        client_name: str,
-        path: str,
-        timeout: HTTPTimeout,
-    ) -> HTTPResponse:
-        """This is the next function of the middleware."""
-        return HTTPResponse(200, {"Foo": "Bar"}, {"id": "1", "name": "alive"})
 
 
 @pytest.fixture

@@ -6,27 +6,35 @@ from django.test import override_settings
 from prometheus_client import CollectorRegistry  # type: ignore
 
 from blacksmith import (
-    HTTPRequest,
-    HTTPResponse,
-    HTTPTimeout,
-    PrometheusMetrics,
     SyncAbstractTransport,
     SyncCircuitBreakerMiddleware,
     SyncClientFactory,
     SyncHTTPAddHeadersMiddleware,
     SyncPrometheusMiddleware,
     SyncStaticDiscovery,
+    CollectionParser,
+    HTTPRequest,
+    HTTPResponse,
+    HTTPTimeout,
+    PrometheusMetrics,
 )
 from dj_blacksmith.client._sync.client import (
     SyncClientProxy,
     SyncDjBlacksmithClient,
+    build_collection_parser,
     build_middlewares,
     build_middlewares_factories,
     build_sd,
+    build_transport,
     client_factory,
     middleware_factories,
 )
-from tests.unittests.fixtures import DummyMiddlewareFactory1, DummyMiddlewareFactory2
+from tests.unittests.fixtures import (
+    SyncDummyTransport,
+    DummyCollectionParser,
+    DummyMiddlewareFactory1,
+    DummyMiddlewareFactory2,
+)
 
 
 class FakeConsulTransport(SyncAbstractTransport):
@@ -114,6 +122,46 @@ def test_build_sd_errors(params: Dict[str, Any]):
     "params",
     [
         {
+            "settings": {},
+            "expected": CollectionParser,
+        },
+        {
+            "settings": {
+                "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",
+            },
+            "expected": DummyCollectionParser,
+        },
+    ],
+)
+def test_build_collection_parser(params: Dict[str, Any]):
+    collection_parser = build_collection_parser(params["settings"])
+    assert collection_parser is params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {},
+            "expected": None,
+        },
+        {
+            "settings": {
+                "transport": "tests.unittests.fixtures.SyncDummyTransport",
+            },
+            "expected": SyncDummyTransport,
+        },
+    ],
+)
+def test_build_transport(params: Dict[str, Any]):
+    transport = build_transport(params["settings"])
+    assert transport is params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
             "settings": {
                 "middlewares": [
                     "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
@@ -146,6 +194,7 @@ def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
                         "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
                     ],
                     "verify_certificate": False,
+                    "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",  # noqa
                     "timeout": {"read": 10, "connect": 5},
                 }
             },
@@ -156,6 +205,7 @@ def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
             },
             "expected_verify_cert": False,
             "expected_timeout": HTTPTimeout(10, 5),
+            "expected_collection_parser": DummyCollectionParser,
         },
         {
             "settings": {
@@ -168,6 +218,7 @@ def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
             "expected_proxies": None,
             "expected_verify_cert": True,
             "expected_timeout": HTTPTimeout(30, 15),
+            "expected_collection_parser": CollectionParser,
         },
     ],
 )
@@ -178,6 +229,7 @@ def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
         assert cli.transport.verify_certificate == params["expected_verify_cert"]
         assert cli.timeout == params["expected_timeout"]
         assert [type(m) for m in cli.middlewares] == params["expected_middlewares"]
+        assert cli.collection_parser is params["expected_collection_parser"]
 
 
 @pytest.mark.parametrize(

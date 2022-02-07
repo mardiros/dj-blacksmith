@@ -5,11 +5,14 @@ from django.http import HttpRequest
 from blacksmith import (
     AbstractCachePolicy,
     AbstractSerializer,
+    AsyncAbstractTransport,
     AsyncHTTPAddHeadersMiddleware,
     AsyncHTTPMiddleware,
     CollectionParser,
     HTTPRequest,
     HTTPResponse,
+    HTTPTimeout,
+    SyncAbstractTransport,
 )
 from dj_blacksmith.client._async.middleware_factory import (
     AsyncAbstractMiddlewareFactoryBuilder,
@@ -69,3 +72,27 @@ class DummyMiddlewareFactory2(AsyncAbstractMiddlewareFactoryBuilder):
 
 class DummyCollectionParser(CollectionParser):
     pass
+
+
+class AsyncDummyTransport(AsyncAbstractTransport):
+    async def __call__(
+        self,
+        req: HTTPRequest,
+        client_name: str,
+        path: str,
+        timeout: HTTPTimeout,
+    ) -> HTTPResponse:
+        """This is the next function of the middleware."""
+        return HTTPResponse(200, {"Foo": "Bar"}, {"id": "1", "name": "alive"})
+
+
+class SyncDummyTransport(SyncAbstractTransport):
+    def __call__(
+        self,
+        req: HTTPRequest,
+        client_name: str,
+        path: str,
+        timeout: HTTPTimeout,
+    ) -> HTTPResponse:
+        """This is the next function of the middleware."""
+        return HTTPResponse(200, {"Foo": "Bar"}, {"id": "1", "name": "alive"})

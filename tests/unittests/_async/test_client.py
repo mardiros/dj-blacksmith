@@ -25,10 +25,12 @@ from dj_blacksmith.client._async.client import (
     build_middlewares,
     build_middlewares_factories,
     build_sd,
+    build_transport,
     client_factory,
     middleware_factories,
 )
 from tests.unittests.fixtures import (
+    AsyncDummyTransport,
     DummyCollectionParser,
     DummyMiddlewareFactory1,
     DummyMiddlewareFactory2,
@@ -134,6 +136,26 @@ async def test_build_sd_errors(params: Dict[str, Any]):
 def test_build_collection_parser(params: Dict[str, Any]):
     collection_parser = build_collection_parser(params["settings"])
     assert collection_parser is params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {},
+            "expected": None,
+        },
+        {
+            "settings": {
+                "transport": "tests.unittests.fixtures.AsyncDummyTransport",
+            },
+            "expected": AsyncDummyTransport,
+        },
+    ],
+)
+def test_build_transport(params: Dict[str, Any]):
+    transport = build_transport(params["settings"])
+    assert transport is params["expected"]
 
 
 @pytest.mark.parametrize(
