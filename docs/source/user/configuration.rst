@@ -147,3 +147,21 @@ there are middlewares per ``Client``. Global :ref:`middlewares` are usefull for
 metrics, tracing, caching, but they are not usesull for authentication in
 a multi user application. :ref:`Middleware Factories` are usefull for that
 purpose.
+
+
+Transport
+---------
+
+`For testing purpose`_, the transport can be updated.
+
+The transport is updated for all the clients, using the ``BLACKSMITH_TRANSPORT``
+setting. This setting has to be set in the ``DJANGO_SETTINGS_MODULE`` used
+for tests, not for production.
+
+
+.. code-block:: python
+
+   BLACKSMITH_TRANSPORT = "path.to.FakeTransport"
+
+
+.. _`For testing purpose`: https://python-blacksmith.readthedocs.io/en/latest/user/testing.html
