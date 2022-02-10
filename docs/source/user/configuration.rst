@@ -139,7 +139,7 @@ deserialize and build back the pyrantic model.
 Middlewares
 -----------
 
-The blacksmith middlewares can also be configured using the configurator,
+The blacksmith middlewares can also be configured using Django's settings,
 this is going to be documented in the next chapters.
 
 In blacksmith, there are global middlewares per ``ClientFactory``, and
