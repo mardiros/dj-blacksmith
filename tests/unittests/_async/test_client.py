@@ -23,6 +23,7 @@ from dj_blacksmith.client._async.client import (
     AsyncClientProxy,
     AsyncDjBlacksmithClient,
     build_collection_parser,
+    build_metrics,
     build_middlewares,
     build_middlewares_factories,
     build_sd,
@@ -158,6 +159,62 @@ def test_build_transport(params: Dict[str, Any]):
     with override_settings(**params["settings"]):
         transport = build_transport()
     assert transport is params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {},
+            "expected_request_latency_seconds": [
+                0.05,
+                0.1,
+                0.2,
+                0.4,
+                0.8,
+                1.6,
+                3.2,
+                6.4,
+                12.8,
+                25.6,
+            ],
+            "expected_blacksmith_cache_latency_seconds": [
+                0.005,
+                0.01,
+                0.02,
+                0.04,
+                0.08,
+                0.16,
+                0.32,
+                0.64,
+                1.28,
+                2.56,
+            ],
+        },
+        {
+            "settings": {
+                "metrics": {
+                    "buckets": [0.1, 0.2],
+                    "hit_cache_buckets": [0.01, 0.02],
+                },
+            },
+            "expected_request_latency_seconds": [0.1, 0.2],
+            "expected_blacksmith_cache_latency_seconds": [0.01, 0.02],
+        },
+    ],
+)
+def test_build_metrics(params: Dict[str, Any], prometheus_registry: CollectorRegistry):
+    metrics = build_metrics(params["settings"])
+    assert isinstance(metrics, PrometheusMetrics)
+    assert (
+        metrics.blacksmith_request_latency_seconds._kwargs["buckets"]  # type: ignore
+        == params["expected_request_latency_seconds"]
+    )
+
+    assert (
+        metrics.blacksmith_cache_latency_seconds._kwargs["buckets"]  # type: ignore
+        == params["expected_blacksmith_cache_latency_seconds"]
+    )
 
 
 @pytest.mark.parametrize(

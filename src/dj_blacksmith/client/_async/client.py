@@ -60,6 +60,11 @@ def build_transport() -> Optional[Type[AsyncAbstractTransport]]:
     return cls
 
 
+def build_metrics(settings: Dict[str, Any]) -> PrometheusMetrics:
+    metrics = settings.get("metrics", {})
+    return PrometheusMetrics(**metrics)
+
+
 def build_middlewares(
     settings: Mapping[str, Any],
     metrics: PrometheusMetrics,
@@ -86,7 +91,7 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
         collection_parser=collection_parser,
         transport=transport() if transport else None,
     )
-    metrics = PrometheusMetrics()
+    metrics = build_metrics(settings)
     for middleware in build_middlewares(settings, metrics):
         cli.add_middleware(middleware)
     await cli.initialize()
