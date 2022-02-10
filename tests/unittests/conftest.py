@@ -10,6 +10,7 @@ from blacksmith import (
     SyncClientFactory,
     SyncRouterDiscovery,
 )
+
 from .fixtures import AsyncDummyTransport, SyncDummyTransport
 
 

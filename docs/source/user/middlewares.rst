@@ -35,8 +35,18 @@ Prometheus Middleware
             # Async users use the async version
             # "dj_blacksmith.AsyncPrometheusMiddlewareBuilder",
          ],
+         # Optional settings with default values
+         # "metrics": {
+         #    "buckets": [0.05 * 2 ** x for x in range(10)],
+         #    "hit_cache_buckets": [0.005 * 2 ** x for x in range(10)],
+         # },
       },
    }
+
+The ``buckets`` setting is used to configure the histogram of http requests,
+and the ``hit_cache_buckets`` is used to configure the histogram for the http
+requests response comming from the :ref:`HTTP Cache Middleware`.
+
 
 Circuit Breaker Middleware
 --------------------------
@@ -47,17 +57,42 @@ Circuit Breaker Middleware
       "default": {
          ...,
          "middlewares": [
-            # middlewares goes here.
+            "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
+            # Async users use the async version
+            # "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
          ],
+         # Optional settings with default values
+         # "circuit_breaker": {
+         #    "threshold": 5,
+         #    "ttl": 30,
+         # }
       },
    }
 
 Collect Circuit Breaker in prometheus
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+To properly works together, middleware must be added in this order:
 
-Using redis as a storage backend
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code-block:: ini
+
+   BLACKSMITH_CLIENT = {
+      "default": {
+         ...,
+         "middlewares": [
+            "dj_blacksmith.SyncPrometheusMiddlewareBuilder",
+            "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
+            # Async users use the async version
+            # "dj_blacksmith.AsyncPrometheusMiddlewareBuilder",
+            # "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
+         ],
+      },
+   }
+
+
+.. Using redis as a storage backend
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 .. _`HTTP Cache Middleware`:
 
@@ -71,6 +106,15 @@ HTTP Cache Middleware
          ...,
          "middlewares": [
             # middlewares goes here.
+            "dj_blacksmith.SyncHTTPCacheMiddlewareBuilder",
+            # Async users use the async version
+            # "dj_blacksmith.AsyncHTTPCacheMiddlewareBuilder",
          ],
+         "http_cache": {
+            "redis": "redis://host.example.net/42",
+            # Optional settings with default values
+            # "policy": "blacksmith.CacheControlPolicy",
+            # "serializer": "blacksmith.JsonSerializer",
+         }
       },
    }
