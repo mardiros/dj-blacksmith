@@ -24,9 +24,7 @@ from dj_blacksmith.client._sync.middleware_factory import (
 )
 
 
-def build_sd(
-    settings: Mapping[str, Mapping[str, Any]]
-) -> SyncAbstractServiceDiscovery:
+def build_sd(settings: Mapping[str, Mapping[str, Any]]) -> SyncAbstractServiceDiscovery:
     sd_setting = settings.get("sd")
     if sd_setting == "consul":
         return SyncConsulDiscovery(**settings["consul_sd_config"])

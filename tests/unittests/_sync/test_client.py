@@ -7,17 +7,17 @@ from django.test import override_settings
 from prometheus_client import CollectorRegistry  # type: ignore
 
 from blacksmith import (
+    CollectionParser,
+    HTTPRequest,
+    HTTPResponse,
+    HTTPTimeout,
+    PrometheusMetrics,
     SyncAbstractTransport,
     SyncCircuitBreakerMiddleware,
     SyncClientFactory,
     SyncHTTPAddHeadersMiddleware,
     SyncPrometheusMiddleware,
     SyncStaticDiscovery,
-    CollectionParser,
-    HTTPRequest,
-    HTTPResponse,
-    HTTPTimeout,
-    PrometheusMetrics,
 )
 from dj_blacksmith.client._sync.client import (
     SyncClientProxy,
@@ -32,10 +32,10 @@ from dj_blacksmith.client._sync.client import (
     middleware_factories,
 )
 from tests.unittests.fixtures import (
-    SyncDummyTransport,
     DummyCollectionParser,
     DummyMiddlewareFactory1,
     DummyMiddlewareFactory2,
+    SyncDummyTransport,
 )
 
 

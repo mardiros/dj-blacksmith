@@ -18,6 +18,8 @@ unittest test_suite=default_test_suite:
 gensync:
     poetry run python scripts/gen_unasync.py
     poetry run isort src/dj_blacksmith/client/_sync
+    poetry run black src/dj_blacksmith/client/_sync
+    poetry run isort tests/unittests/_sync
     poetry run black tests/unittests/_sync
 
 lint:
