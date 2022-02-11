@@ -23,6 +23,10 @@ from .client._sync.middleware import (
     SyncHTTPCacheMiddlewareBuilder,
     SyncPrometheusMiddlewareBuilder,
 )
+from .client._sync.middleware_factory import (
+    SyncAbstractMiddlewareFactoryBuilder,
+    SyncForwardHeaderFactoryBuilder,
+)
 
 __all__ = [
     # Clients
@@ -38,4 +42,6 @@ __all__ = [
     # Middlewares Factory
     "AsyncAbstractMiddlewareFactoryBuilder",
     "AsyncForwardHeaderFactoryBuilder",
+    "SyncAbstractMiddlewareFactoryBuilder",
+    "SyncForwardHeaderFactoryBuilder",
 ]
