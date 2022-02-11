@@ -28,6 +28,8 @@ as in the example above.
          "forwarded_headers": ["Authorization", "Accept-Language"],
          "middleware_factories": [
                "dj_blacksmith.AsyncForwardHeaderFactoryBuilder",
+               # Or the Sync version for synchronous client
+               # "dj_blacksmith.SyncForwardHeaderFactoryBuilder",
          ],
       },
    }
