@@ -194,24 +194,12 @@ def test_build_transport(params: Dict[str, Any]):
         {
             "settings": {
                 "metrics": {
-                    "buckets": [
-                        0.1,
-                        0.2,
-                    ],
-                    "hit_cache_buckets": [
-                        0.01,
-                        0.02,
-                    ],
+                    "buckets": [0.1, 0.2],
+                    "hit_cache_buckets": [0.01, 0.02],
                 },
             },
-            "expected_request_latency_seconds": [
-                0.1,
-                0.2,
-            ],
-            "expected_blacksmith_cache_latency_seconds": [
-                0.01,
-                0.02,
-            ],
+            "expected_request_latency_seconds": [0.1, 0.2],
+            "expected_blacksmith_cache_latency_seconds": [0.01, 0.02],
         },
     ],
 )

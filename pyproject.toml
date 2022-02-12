@@ -18,7 +18,7 @@ version = "0.3.0"
 [tool.poetry.dependencies]
 Django = ">=3.2, <=5"
 aioredis = "^2.0.1"
-blacksmith = {version = "^0.13.3", extras = ["prometheus"]}
+blacksmith = {version = "^1.0.0", extras = ["prometheus"]}
 python = "^3.7"
 redis = "^4.1.2"
 types-setuptools = "^57.4.7"
