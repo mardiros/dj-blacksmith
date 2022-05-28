@@ -14,6 +14,7 @@ Welcome to dj-blacksmith's documentation!
    user/configuration
    user/middlewares
    user/middleware_factories
+   user/usage
    user/api
    user/changelog
 
