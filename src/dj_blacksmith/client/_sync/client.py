@@ -1,9 +1,5 @@
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
-from blacksmith.typing import ClientName
-from django.http.request import HttpRequest
-from django.utils.module_loading import import_string
-
 from blacksmith import (
     AbstractCollectionParser,
     HTTPTimeout,
@@ -17,6 +13,10 @@ from blacksmith import (
     SyncRouterDiscovery,
     SyncStaticDiscovery,
 )
+from blacksmith.typing import ClientName
+from django.http.request import HttpRequest
+from django.utils.module_loading import import_string
+
 from dj_blacksmith._settings import get_clients, get_transport
 from dj_blacksmith.client._sync.middleware import SyncHTTPMiddlewareBuilder
 from dj_blacksmith.client._sync.middleware_factory import (
