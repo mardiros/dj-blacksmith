@@ -17,10 +17,9 @@ version = "1.0.0"
 
 [tool.poetry.dependencies]
 Django = ">=3.2, <=5"
-aioredis = "^2.0.1"
 blacksmith = {version = "^1.0.0", extras = ["prometheus"]}
 python = "^3.7"
-redis = "^4.1.2"
+redis = "^4.2.0"
 types-setuptools = "^57.4.7"
 
 [tool.poetry.dev-dependencies]
@@ -38,6 +37,7 @@ pytest-django = "^4.5.2"
 sphinx-rtd-theme = "^1.0.0"
 tomlkit = "^0.9.0"
 unasync = "^0.5.0"
+types-redis = "^4.5.5.0"
 
 [tool.pytest.ini_options]
 norecursedirs = "docs"

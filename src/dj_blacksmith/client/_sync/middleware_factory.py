@@ -2,9 +2,8 @@
 import abc
 from typing import Any, Dict, List, Mapping
 
-from django.http.request import HttpRequest
-
 from blacksmith import SyncHTTPAddHeadersMiddleware, SyncHTTPMiddleware
+from django.http.request import HttpRequest
 
 
 class SyncAbstractMiddlewareFactoryBuilder(abc.ABC):

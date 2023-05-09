@@ -1,9 +1,9 @@
 from typing import Any, Dict
 
 import pytest
+from blacksmith import CacheControlPolicy, PrometheusMetrics
 from prometheus_client import CollectorRegistry  # type: ignore
 
-from blacksmith import CacheControlPolicy, PrometheusMetrics
 from dj_blacksmith.client._sync.middleware import (
     SyncCircuitBreakerMiddlewareBuilder,
     SyncHTTPAddHeadersMiddlewareBuilder,
