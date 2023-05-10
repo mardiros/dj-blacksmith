@@ -1,3 +1,9 @@
+1.0.1 - Released on 2023-05-10
+------------------------------
+* Update deps
+  * remove aioredis, use redis.asyncio instead (contributor: Michael Vieira)
+  * update dev deps
+
 1.0.0 - Released on 2022-02-12
 ------------------------------
 * Update blacksmith to version 1.0
