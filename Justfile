@@ -32,7 +32,7 @@ black:
     poetry run isort .
     poetry run black .
 
-rtd:
+gh-pages:
     poetry export --dev -f requirements.txt -o docs/requirements.txt --without-hashes
 
 cov test_suite=default_test_suite:
@@ -40,7 +40,7 @@ cov test_suite=default_test_suite:
     rm -rf htmlcov
     poetry run pytest --cov-report=html --cov=dj_blacksmith {{test_suite}}
     xdg-open htmlcov/index.html
-release major_minor_patch: test rtd && changelog
+release major_minor_patch: test gh-pages && changelog
     poetry version {{major_minor_patch}}
     poetry install
 

@@ -164,4 +164,4 @@ for tests, not for production.
    BLACKSMITH_TRANSPORT = "path.to.FakeTransport"
 
 
-.. _`For testing purpose`: https://python-blacksmith.readthedocs.io/en/latest/user/testing.html
+.. _`For testing purpose`: https://mardiros.github.io/blacksmith/user/testing.html
