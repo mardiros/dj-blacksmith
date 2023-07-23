@@ -1,9 +1,9 @@
 dj-blacksmith
 =============
 
-.. image:: https://readthedocs.org/projects/dj-blacksmith/badge/?version=latest
-   :target: https://dj-blacksmith.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
+.. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/gh-pages.yml/badge.svg
+   :target: https://mardiros.github.io/dj-blacksmith/
+   :alt: Documentation
 
 .. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/main.yml/badge.svg
    :target: https://github.com/mardiros/dj-blacksmith/actions/workflows/main.yml
@@ -15,4 +15,4 @@ dj-blacksmith
 
 Django bindings for `Blacksmith`_ rest api client.
 
-.. _`Blacksmith`: https://python-blacksmith.readthedocs.io/en/latest/index.html
+.. _`Blacksmith`: https://mardiros.github.io/blacksmith/
