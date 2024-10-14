@@ -1,9 +1,5 @@
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
-from blacksmith.typing import ClientName
-from django.http.request import HttpRequest
-from django.utils.module_loading import import_string
-
 from blacksmith import (
     AbstractCollectionParser,
     AsyncAbstractServiceDiscovery,
@@ -12,11 +8,16 @@ from blacksmith import (
     AsyncClientFactory,
     AsyncConsulDiscovery,
     AsyncHTTPMiddleware,
+    AsyncNomadDiscovery,
     AsyncRouterDiscovery,
     AsyncStaticDiscovery,
     HTTPTimeout,
     PrometheusMetrics,
 )
+from blacksmith.typing import ClientName
+from django.http.request import HttpRequest
+from django.utils.module_loading import import_string
+
 from dj_blacksmith._settings import get_clients, get_transport
 from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
 from dj_blacksmith.client._async.middleware_factory import (
@@ -30,6 +31,8 @@ def build_sd(
     sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
         return AsyncConsulDiscovery(**settings["consul_sd_config"])
+    elif sd_setting == "nomad":
+        return AsyncNomadDiscovery(**settings["nomad_sd_config"])
     elif sd_setting == "router":
         return AsyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":

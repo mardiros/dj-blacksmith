@@ -17,28 +17,28 @@ version = "2.0.0"
 
 [tool.poetry.dependencies]
 Django = ">=3.2, <=5"
-blacksmith = {version = "^2.0.0", extras = ["prometheus"]}
-python = "^3.7"
+blacksmith = {version = "^3.1.0", extras = ["prometheus"]}
+python = "^3.9"
 redis = "^4.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
 django-stubs = "^1.9.0"
-esbonio = "^0.13.0"
-flake8 = "^4.0.1"
-furo = "^2022"
+esbonio = "^0.16.4"
+flake8 = "^7.0.0"
+furo = "^2024.5.6"
 isort = "^5.10.1"
 mypy = "^1.2.0"
 pytest = "^7.3.1"
 pytest-asyncio = "^0.21.0"
 pytest-cov = "^4.0.0"
 pytest-django = "^4.5.2"
-sphinx = "^4.2.0"
+sphinx = "^7.0.1"
 sphinx-autodoc-typehints = "^1.12.0"
-tomlkit = "^0.9.0"
+tomlkit = "^0.12.5"
 types-redis = "^4.5.5.0"
 types-setuptools = "^57.4.7"
-unasync = "^0.5.0"
+unasync = "^0.6.0"
 
 [tool.pytest.ini_options]
 norecursedirs = "docs"
