@@ -1,3 +1,7 @@
+2.0.0 - Released on 2024-10-14
+------------------------------
+* Update blackmith to version 2.x for python 3.7 compatibility
+
 1.0.1 - Released on 2023-05-10
 ------------------------------
 * Update deps
