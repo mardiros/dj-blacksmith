@@ -26,12 +26,12 @@ def prometheus_registry():
 
 
 @pytest.fixture
-def dummy_async_client_factory() -> AsyncClientFactory[Any, Any]:
+def dummy_async_client_factory() -> AsyncClientFactory[Any]:
     return AsyncClientFactory(
         sd=AsyncRouterDiscovery(), transport=AsyncDummyTransport()
     )
 
 
 @pytest.fixture
-def dummy_sync_client_factory() -> SyncClientFactory[Any, Any]:
+def dummy_sync_client_factory() -> SyncClientFactory[Any]:
     return SyncClientFactory(sd=SyncRouterDiscovery(), transport=SyncDummyTransport())

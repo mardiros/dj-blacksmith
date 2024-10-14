@@ -25,7 +25,7 @@ from dj_blacksmith.client._sync.middleware_factory import (
 
 
 def build_sd(settings: Mapping[str, Mapping[str, Any]]) -> SyncAbstractServiceDiscovery:
-    sd_setting = settings.get("sd")
+    sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
         return SyncConsulDiscovery(**settings["consul_sd_config"])
     elif sd_setting == "router":
@@ -73,7 +73,7 @@ def build_middlewares(
         yield cls(settings, metrics).build()
 
 
-def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
+def client_factory(name: str = "default") -> SyncClientFactory[Any]:
     settings = get_clients().get(name)
     if settings is None:
         raise RuntimeError(f"Client {name} does not exists")
@@ -81,7 +81,7 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any, Any]:
     timeout = settings.get("timeout", {})
     collection_parser = build_collection_parser(settings)
     transport = build_transport()
-    cli: SyncClientFactory[Any, Any] = SyncClientFactory(
+    cli: SyncClientFactory[Any] = SyncClientFactory(
         sd,
         proxies=settings.get("proxies"),
         verify_certificate=settings.get("verify_certificate", True),
@@ -113,13 +113,13 @@ def middleware_factories(name: str = "default"):
 class SyncClientProxy:
     def __init__(
         self,
-        client_factory: SyncClientFactory[Any, Any],
+        client_factory: SyncClientFactory[Any],
         middlewares: List[SyncHTTPMiddleware],
     ):
         self.client_factory = client_factory
         self.middlewares = middlewares
 
-    def __call__(self, client_name: ClientName) -> SyncClient[Any, Any]:
+    def __call__(self, client_name: ClientName) -> SyncClient[Any]:
         cli = self.client_factory(client_name)
         for middleware in self.middlewares:
             cli.add_middleware(middleware)
@@ -127,7 +127,7 @@ class SyncClientProxy:
 
 
 class SyncDjBlacksmithClient:
-    client_factories: Dict[str, SyncClientFactory[Any, Any]] = {}
+    client_factories: Dict[str, SyncClientFactory[Any]] = {}
     middleware_factories: Dict[str, List[SyncAbstractMiddlewareFactoryBuilder]] = {}
 
     def __init__(self, request: HttpRequest):

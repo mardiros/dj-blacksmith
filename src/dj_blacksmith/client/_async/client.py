@@ -27,7 +27,7 @@ from dj_blacksmith.client._async.middleware_factory import (
 def build_sd(
     settings: Mapping[str, Mapping[str, Any]]
 ) -> AsyncAbstractServiceDiscovery:
-    sd_setting = settings.get("sd")
+    sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
         return AsyncConsulDiscovery(**settings["consul_sd_config"])
     elif sd_setting == "router":
@@ -75,7 +75,7 @@ def build_middlewares(
         yield cls(settings, metrics).build()
 
 
-async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
+async def client_factory(name: str = "default") -> AsyncClientFactory[Any]:
     settings = get_clients().get(name)
     if settings is None:
         raise RuntimeError(f"Client {name} does not exists")
@@ -83,7 +83,7 @@ async def client_factory(name: str = "default") -> AsyncClientFactory[Any, Any]:
     timeout = settings.get("timeout", {})
     collection_parser = build_collection_parser(settings)
     transport = build_transport()
-    cli: AsyncClientFactory[Any, Any] = AsyncClientFactory(
+    cli: AsyncClientFactory[Any] = AsyncClientFactory(
         sd,
         proxies=settings.get("proxies"),
         verify_certificate=settings.get("verify_certificate", True),
@@ -115,13 +115,13 @@ def middleware_factories(name: str = "default"):
 class AsyncClientProxy:
     def __init__(
         self,
-        client_factory: AsyncClientFactory[Any, Any],
+        client_factory: AsyncClientFactory[Any],
         middlewares: List[AsyncHTTPMiddleware],
     ):
         self.client_factory = client_factory
         self.middlewares = middlewares
 
-    async def __call__(self, client_name: ClientName) -> AsyncClient[Any, Any]:
+    async def __call__(self, client_name: ClientName) -> AsyncClient[Any]:
         cli = await self.client_factory(client_name)
         for middleware in self.middlewares:
             cli.add_middleware(middleware)
@@ -129,7 +129,7 @@ class AsyncClientProxy:
 
 
 class AsyncDjBlacksmithClient:
-    client_factories: Dict[str, AsyncClientFactory[Any, Any]] = {}
+    client_factories: Dict[str, AsyncClientFactory[Any]] = {}
     middleware_factories: Dict[str, List[AsyncAbstractMiddlewareFactoryBuilder]] = {}
 
     def __init__(self, request: HttpRequest):
