@@ -1,11 +1,6 @@
 from typing import Any, Dict
 
 import pytest
-from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
-from blacksmith.service._async.adapters.httpx import AsyncHttpxTransport
-from django.test import override_settings
-from prometheus_client import CollectorRegistry  # type: ignore
-
 from blacksmith import (
     AsyncAbstractTransport,
     AsyncCircuitBreakerMiddleware,
@@ -19,6 +14,11 @@ from blacksmith import (
     HTTPTimeout,
     PrometheusMetrics,
 )
+from blacksmith.sd._async.adapters.consul import _registry  # type: ignore
+from blacksmith.service._async.adapters.httpx import AsyncHttpxTransport
+from django.test import override_settings
+from prometheus_client import CollectorRegistry  # type: ignore
+
 from dj_blacksmith.client._async.client import (
     AsyncClientProxy,
     AsyncDjBlacksmithClient,
@@ -397,7 +397,7 @@ def test_middleware_factories(params: Dict[str, Any]):
 
 
 async def test_client_proxy_header_injection(
-    dummy_async_client_factory: AsyncClientFactory[Any]
+    dummy_async_client_factory: AsyncClientFactory[Any],
 ):
     prox = AsyncClientProxy(
         dummy_async_client_factory,

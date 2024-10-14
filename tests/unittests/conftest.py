@@ -2,14 +2,13 @@ from typing import Any
 
 import prometheus_client  # type: ignore
 import pytest
-from django.test import RequestFactory
-
 from blacksmith import (
     AsyncClientFactory,
     AsyncRouterDiscovery,
     SyncClientFactory,
     SyncRouterDiscovery,
 )
+from django.test import RequestFactory
 
 from .fixtures import AsyncDummyTransport, SyncDummyTransport
 

@@ -4,10 +4,10 @@ import smtplib
 from textwrap import dedent
 
 import prometheus_client
+from blacksmith import AsyncConsulDiscovery
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from notif.resources.user import User
 
-from blacksmith import AsyncConsulDiscovery
 from dj_blacksmith import AsyncDjBlacksmithClient
 
 smtp_sd = AsyncConsulDiscovery(unversioned_service_url_fmt="{address} {port}")

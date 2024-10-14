@@ -1,6 +1,5 @@
-from django.apps import AppConfig
-
 from blacksmith import scan
+from django.apps import AppConfig
 
 from ._settings import get_imports
 
