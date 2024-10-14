@@ -23,8 +23,7 @@ gensync:
     poetry run black tests/unittests/_sync
 
 lint:
-    # poetry run flake8
-    echo "no linter"
+    poetry run flake8
 
 mypy:
     poetry run mypy src/dj_blacksmith/
