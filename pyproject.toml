@@ -13,7 +13,7 @@ homepage = "https://github.com/mardiros/dj-blacksmith"
 name = "dj-blacksmith"
 readme = "README.rst"
 repository = "https://github.com/mardiros/dj-blacksmith"
-version = "2.0.0"
+version = "3.0.0"
 
 [tool.poetry.dependencies]
 Django = ">=3.2, <=5"

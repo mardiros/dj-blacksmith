@@ -1,3 +1,7 @@
+3.0.0 - Released on 2024-10-14
+------------------------------
+* Update to blackmith 3 with nomad sidecar support
+
 2.0.0 - Released on 2024-10-14
 ------------------------------
 * Update blackmith to version 2.x for python 3.7 compatibility
