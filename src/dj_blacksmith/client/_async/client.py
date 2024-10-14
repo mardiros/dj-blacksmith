@@ -8,6 +8,7 @@ from blacksmith import (
     AsyncClientFactory,
     AsyncConsulDiscovery,
     AsyncHTTPMiddleware,
+    AsyncNomadDiscovery,
     AsyncRouterDiscovery,
     AsyncStaticDiscovery,
     HTTPTimeout,
@@ -30,6 +31,8 @@ def build_sd(
     sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
         return AsyncConsulDiscovery(**settings["consul_sd_config"])
+    elif sd_setting == "nomad":
+        return AsyncNomadDiscovery(**settings["nomad_sd_config"])
     elif sd_setting == "router":
         return AsyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":
