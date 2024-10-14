@@ -48,6 +48,7 @@ class FakeConsulTransport(AsyncAbstractTransport):
             {},
             [
                 {
+                    "Address": f"{request.path['name']}",
                     "ServiceAddress": f"{request.path['name']}",
                     "ServicePort": 80,
                 }
@@ -55,7 +56,7 @@ class FakeConsulTransport(AsyncAbstractTransport):
         )
 
 
-def consul_blacksmith_cli(url: str, tok: str) -> AsyncClientFactory[Any, Any]:
+def consul_blacksmith_cli(url: str, tok: str) -> AsyncClientFactory[Any]:
     return AsyncClientFactory(
         sd=AsyncStaticDiscovery({("consul", "v1"): url}),
         registry=_registry,  # type: ignore
@@ -396,7 +397,7 @@ def test_middleware_factories(params: Dict[str, Any]):
 
 
 async def test_client_proxy_header_injection(
-    dummy_async_client_factory: AsyncClientFactory[Any, Any]
+    dummy_async_client_factory: AsyncClientFactory[Any]
 ):
     prox = AsyncClientProxy(
         dummy_async_client_factory,
@@ -406,4 +407,4 @@ async def test_client_proxy_header_injection(
     )
     cli = await prox("dummy")
     resp = await cli.dummies.get({"name": "foo"})
-    assert resp.http_response.headers == {"Foo": "Bar"}  # type: ignore
+    assert resp.raw_result.unwrap().headers == {"Foo": "Bar"}  # type: ignore

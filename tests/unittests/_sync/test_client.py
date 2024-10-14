@@ -48,6 +48,7 @@ class FakeConsulTransport(SyncAbstractTransport):
             {},
             [
                 {
+                    "Address": f"{request.path['name']}",
                     "ServiceAddress": f"{request.path['name']}",
                     "ServicePort": 80,
                 }
@@ -55,7 +56,7 @@ class FakeConsulTransport(SyncAbstractTransport):
         )
 
 
-def consul_blacksmith_cli(url: str, tok: str) -> SyncClientFactory[Any, Any]:
+def consul_blacksmith_cli(url: str, tok: str) -> SyncClientFactory[Any]:
     return SyncClientFactory(
         sd=SyncStaticDiscovery({("consul", "v1"): url}),
         registry=_registry,  # type: ignore
@@ -396,7 +397,7 @@ def test_middleware_factories(params: Dict[str, Any]):
 
 
 def test_client_proxy_header_injection(
-    dummy_sync_client_factory: SyncClientFactory[Any, Any]
+    dummy_sync_client_factory: SyncClientFactory[Any],
 ):
     prox = SyncClientProxy(
         dummy_sync_client_factory,
@@ -406,4 +407,4 @@ def test_client_proxy_header_injection(
     )
     cli = prox("dummy")
     resp = cli.dummies.get({"name": "foo"})
-    assert resp.http_response.headers == {"Foo": "Bar"}  # type: ignore
+    assert resp.raw_result.unwrap().headers == {"Foo": "Bar"}  # type: ignore
