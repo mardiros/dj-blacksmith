@@ -1,10 +1,6 @@
-import pkg_resources
+from importlib import metadata
 
-try:
-    __version__ = pkg_resources.get_distribution("dj_blacksmith").version
-except pkg_resources.DistributionNotFound:
-    # read the doc does not support poetry
-    pass
+__version__ = metadata.version("dj_blacksmith")
 
 
 from .client._async.client import AsyncDjBlacksmithClient
