@@ -1,60 +1,64 @@
 default_test_suite := 'tests/unittests'
 
+install:
+    uv sync --group dev --group doc
+
 doc:
-    cd docs && poetry run make html
+    cd docs && uv run make html
     xdg-open docs/build/html/index.html
 
 cleandoc:
-    cd docs && poetry run make clean
+    cd docs && uv run make clean
 
-test: mypy unittest lint
+test: lint typecheck unittest
 
 lf:
-    poetry run pytest -sxvvv --lf
+    uv run pytest -sxvvv --lf
 
 unittest test_suite=default_test_suite:
-    poetry run pytest -sxv {{test_suite}}
+    uv run pytest -sxv {{test_suite}}
 
-gensync:
-    poetry run python scripts/gen_unasync.py
-    poetry run isort src/dj_blacksmith/client/_sync
-    poetry run black src/dj_blacksmith/client/_sync
-    poetry run isort tests/unittests/_sync
-    poetry run black tests/unittests/_sync
+gensync: && fmt
+    uv run python scripts/gen_unasync.py
 
 lint:
-    poetry run flake8
+    uv run ruff check .
 
-mypy:
-    poetry run mypy src/dj_blacksmith/
+typecheck:
+    uv run mypy src/dj_blacksmith/
 
-black:
-    poetry run isort .
-    poetry run black .
-
-gh-pages:
-    poetry export --dev -f requirements.txt -o docs/requirements.txt --without-hashes
+fmt:
+    uv run ruff check --fix .
+    uv run ruff format src tests
 
 cov test_suite=default_test_suite:
     rm -f .coverage
     rm -rf htmlcov
-    poetry run pytest --cov-report=html --cov=dj_blacksmith {{test_suite}}
+    uv run pytest --cov-report=html --cov=dj_blacksmith {{test_suite}}
     xdg-open htmlcov/index.html
-release major_minor_patch: test gh-pages && changelog
-    poetry version {{major_minor_patch}}
-    poetry install
+
+release major_minor_patch: test && changelog
+    #! /bin/bash
+    # Try to bump the version first
+    if ! uvx pdm bump {{major_minor_patch}}; then
+        # If it fails, check if pdm-bump is installed
+        if ! uvx pdm self list | grep -q pdm-bump; then
+            # If not installed, add pdm-bump
+            uvx pdm self add pdm-bump
+        fi
+        # Attempt to bump the version again
+        uvx pdm bump {{major_minor_patch}}
+    fi
+    uv sync
 
 changelog:
-    poetry run python scripts/write_changelog.py
+    uv run python scripts/write_changelog.py
     cat CHANGELOG.rst >> CHANGELOG.rst.new
     rm CHANGELOG.rst
     mv CHANGELOG.rst.new CHANGELOG.rst
     $EDITOR CHANGELOG.rst
 
 publish:
-    git commit -am "Release $(poetry run python scripts/show_release.py)"
-    poetry build
-    poetry publish
-    git push
-    git tag "$(poetry run python scripts/show_release.py)"
-    git push origin "$(poetry run python scripts/show_release.py)"
+    git commit -am "Release $(uv run scripts/get_version.py)"
+    git tag "v$(uv run scripts/get_version.py)"
+    git push origin "v$(uv run scripts/get_version.py)"

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 from blacksmith import AsyncCircuitBreakerMiddleware
@@ -10,7 +10,7 @@ from dj_blacksmith.client._async.client import AsyncClientProxy, AsyncDjBlacksmi
 def test_import():
     # test that the app testapp has loaded its resource while ready
 
-    clients: Dict[str, Any] = dict(registry.clients)  # type: ignore
+    clients: dict[str, Any] = dict(registry.clients)  # type: ignore
     assert list(clients.keys()) == ["dummy"]
     assert list(clients["dummy"].keys()) == ["dummies"]
     dummies: ApiRoutes = clients["dummy"]["dummies"]
@@ -32,7 +32,7 @@ def test_import():
     ],
 )
 async def test_async_dj_blacksmith(
-    params: Dict[str, Any], req: Any, prometheus_registry: Any
+    params: dict[str, Any], req: Any, prometheus_registry: Any
 ):
     bmcli = AsyncDjBlacksmithClient(req.get("/"))
     cli = await bmcli(params["client"])

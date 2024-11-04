@@ -1,44 +1,62 @@
-[tool.poetry]
-authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
+[project]
+name = "dj-blacksmith"
+version = "3.0.0"
+authors = [{ name = "Guillaume Gauvrit", email = "guillaume@gauvr.it" }]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Framework :: Django",
-  "Intended Audience :: Developers",
-  "License :: OSI Approved :: BSD License",
-  "Topic :: Software Development :: Libraries :: Python Modules",
-  "Topic :: Internet :: WWW/HTTP",
+    "Development Status :: 4 - Beta",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
 ]
 description = "Django Bindings for Blacksmith"
-homepage = "https://github.com/mardiros/dj-blacksmith"
-name = "dj-blacksmith"
+license = { text = "MIT" }
+requires-python = ">=3.9"
 readme = "README.rst"
-repository = "https://github.com/mardiros/dj-blacksmith"
-version = "3.0.0"
 
-[tool.poetry.dependencies]
-Django = ">=3.2, <=5"
-blacksmith = {version = "^3.1.0", extras = ["prometheus"]}
-python = "^3.9"
-redis = "^4.2.0"
+dependencies = [
+    "django >=3.2,<=5",
+    "blacksmith[prometheus] >=4.0.0,<5",
+    "redis >=4.2.0,<5",
+]
 
-[tool.poetry.dev-dependencies]
-black = "^22.1.0"
-django-stubs = "^1.9.0"
-esbonio = "^0.16.4"
-flake8 = "^7.0.0"
-furo = "^2024.5.6"
-isort = "^5.10.1"
-mypy = "^1.2.0"
-pytest = "^7.3.1"
-pytest-asyncio = "^0.21.0"
-pytest-cov = "^4.0.0"
-pytest-django = "^4.5.2"
-sphinx = "^7.0.1"
-sphinx-autodoc-typehints = "^1.12.0"
-tomlkit = "^0.12.5"
-types-redis = "^4.5.5.0"
-types-setuptools = "^57.4.7"
-unasync = "^0.6.0"
+[project.urls]
+Homepage = "https://github.com/mardiros/dj-blacksmith"
+Documentation = "https://github.com/mardiros/dj-blacksmith/blob/main/README.rst"
+Repository = "https://github.com/mardiros/dj-blacksmith.git"
+Issues = "https://github.com/mardiros/dj-blacksmith/issues"
+Changelog = "https://github.com/mardiros/dj-blacksmith/blob/main/CHANGELOG.rst"
+
+[tool.pdm.build]
+includes = ["src", "CHANGELOG.rst", "CONTRIBUTORS.txt"]
+excludes = ["tests"]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-autodoc-typehints>=1.12.0,<2",
+    "furo>=2024.8.6",
+]
+
+[dependency-groups]
+dev = [
+    "django-stubs >=1.9.0,<2",
+    "pytest >=8.3.3,<9",
+    "pytest-asyncio >=0.21.0,<1",
+    "pytest-django >=4.5.2,<5",
+    "pytest-cov >=6.0.0,<7",
+    "mypy >=1.4.1,<2",
+    "types-redis >=4.5.5.0,<5",
+    "unasync >=0.6.0,<0.7",
+]
+doc = [
+    "esbonio >=0.16.4,<1",
+    "furo >=2024.5.6",
+    "sphinx >=7.0.1",
+    "sphinx-autodoc-typehints >=1.12.0",
+]
+
 
 [tool.pytest.ini_options]
 norecursedirs = "docs"
@@ -50,17 +68,28 @@ include = ["src"]
 # reportUnknownParameterType = false
 # reportUnknownVariableType = false
 typeCheckingMode = "strict"
+venvPath = ".venv"
 
-[tool.isort]
-profile = "black"
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "B",   # bug bear security warning
+    "I",   # isort import order
+    "F",   # pyflakes
+    "UP",  # alter when better syntax is available
+    "RUF", # the ruff developper's own rules
+]
 
 [tool.coverage.report]
 exclude_lines = [
-  "if TYPE_CHECKING:",
-  "except ImportError:",
-  "except pkg_resources.DistributionNotFound:",
+    "if TYPE_CHECKING:",
+    "except ImportError:",
+    "except pkg_resources.DistributionNotFound:",
 ]
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

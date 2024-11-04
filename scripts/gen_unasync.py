@@ -28,9 +28,9 @@ unasync.unasync_files(
             "tests/unittests/_sync",
             additional_replacements={
                 "_async": "_sync",
-                "tests.unittests.fixtures.AsyncDummyTransport": "tests.unittests.fixtures.SyncDummyTransport",  # noqa
-                "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder": "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",  # noqa
-                "dj_blacksmith.AsyncPrometheusMiddlewareBuilder": "dj_blacksmith.SyncPrometheusMiddlewareBuilder",  # noqa
+                "tests.unittests.fixtures.AsyncDummyTransport": "tests.unittests.fixtures.SyncDummyTransport",
+                "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder": "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
+                "dj_blacksmith.AsyncPrometheusMiddlewareBuilder": "dj_blacksmith.SyncPrometheusMiddlewareBuilder",
                 "dummy_async_client_factory": "dummy_sync_client_factory",
             },
         ),

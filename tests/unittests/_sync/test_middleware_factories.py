@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 from django.test import RequestFactory
@@ -18,7 +18,7 @@ from dj_blacksmith.client._sync.middleware_factory import (
         }
     ],
 )
-def test_add_header(req: RequestFactory, params: Dict[str, Any]):
+def test_add_header(req: RequestFactory, params: dict[str, Any]):
     request = req.get("/", **params["req_headers"])
     fb = SyncForwardHeaderFactoryBuilder({"forwarded_headers": params["fwd_headers"]})
     mid = fb(request)

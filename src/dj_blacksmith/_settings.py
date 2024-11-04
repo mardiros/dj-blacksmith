@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from django.conf import settings
 
@@ -7,11 +7,11 @@ def get_setting(name: str, default: Any = None) -> Any:
     return getattr(settings, f"BLACKSMITH_{name}", default)
 
 
-def get_imports() -> List[str]:
+def get_imports() -> list[str]:
     return get_setting("IMPORT", [])
 
 
-def get_clients() -> Dict[str, Any]:
+def get_clients() -> dict[str, Any]:
     return get_setting("CLIENT", {})
 
 

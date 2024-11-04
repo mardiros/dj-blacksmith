@@ -1,6 +1,8 @@
 """Middleware"""
+
 import abc
-from typing import Any, Dict, List, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 from blacksmith import SyncHTTPAddHeadersMiddleware, SyncHTTPMiddleware
 from django.http.request import HttpRequest
@@ -26,10 +28,10 @@ class SyncForwardHeaderFactoryBuilder(SyncAbstractMiddlewareFactoryBuilder):
     """
 
     def __init__(self, settings: Mapping[str, Any]):
-        self.headers: List[str] = settings["forwarded_headers"]
+        self.headers: list[str] = settings["forwarded_headers"]
 
     def __call__(self, request: HttpRequest) -> SyncHTTPAddHeadersMiddleware:
-        headers: Dict[str, str] = {}
+        headers: dict[str, str] = {}
         for hdr in self.headers:
             val: str = request.headers.get(hdr, "")  # type: ignore
             if val:

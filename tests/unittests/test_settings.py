@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -13,7 +13,7 @@ from dj_blacksmith._settings import get_clients, get_imports, get_setting
         {"setting": "default", "default": "foo", "expected": "foo"},
     ],
 )
-def test_get_setting(params: Dict[str, Any]):
+def test_get_setting(params: dict[str, Any]):
     setting = get_setting(params["setting"], params.get("default"))
     assert setting == params["expected"]
 
