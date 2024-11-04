@@ -67,37 +67,65 @@ def consul_blacksmith_cli(url: str, tok: str) -> SyncClientFactory[Any]:
 @pytest.mark.parametrize(
     "params",
     [
-        {
-            "settings": {
-                "sd": "static",
-                "static_sd_config": {
-                    "srv": "http://srv:80",
-                    "api/v1": "http://api.v1:80",
+        pytest.param(
+            {
+                "settings": {
+                    "sd": "static",
+                    "static_sd_config": {
+                        "srv": "http://srv:80",
+                        "api/v1": "http://api.v1:80",
+                    },
                 },
             },
-        },
-        {
-            "settings": {
-                "sd": "router",
-                "router_sd_config": {
-                    "service_url_fmt": "http://{service}.{version}:80",
-                    "unversioned_service_url_fmt": "http://{service}:80",
+            id="static",
+        ),
+        pytest.param(
+            {
+                "settings": {
+                    "sd": "router",
+                    "router_sd_config": {
+                        "service_url_fmt": "http://{service}.{version}:80",
+                        "unversioned_service_url_fmt": "http://{service}:80",
+                    },
                 },
             },
-        },
-        {
-            "settings": {
-                "sd": "consul",
-                "consul_sd_config": {
-                    "service_name_fmt": "{service}.{version}",
-                    "service_url_fmt": "http://{address}:{port}",
-                    "_client_factory": consul_blacksmith_cli,
+            id="router",
+        ),
+        pytest.param(
+            {
+                "monkeypatch": {
+                    "NOMAD_UPSTREAM_ADDR_api-v1": "api.v1:80",
+                    "NOMAD_UPSTREAM_ADDR_srv": "srv:80",
+                },
+                "settings": {
+                    "sd": "nomad",
+                    "nomad_sd_config": {
+                        "service_url_fmt": "http://{nomad_upstream_addr}",
+                        "service_env_fmt": "NOMAD_UPSTREAM_ADDR_{service}-{version}",
+                    },
                 },
             },
-        },
+            id="nomad",
+        ),
+        pytest.param(
+            {
+                "settings": {
+                    "sd": "consul",
+                    "consul_sd_config": {
+                        "service_name_fmt": "{service}.{version}",
+                        "service_url_fmt": "http://{address}:{port}",
+                        "_client_factory": consul_blacksmith_cli,
+                    },
+                },
+            },
+            id="consul",
+        ),
     ],
 )
-def test_build_sd(params: Dict[str, Any]):
+def test_build_sd(params: Dict[str, Any], monkeypatch: Any):
+    if "monkeypatch" in params:
+        for key, val in params["monkeypatch"].items():
+            monkeypatch.setenv(key, val)
     sd = build_sd(params["settings"])
     endpoint = sd.get_endpoint("srv", None)
     assert endpoint == "http://srv:80"
@@ -255,7 +283,7 @@ def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
                             "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
                         ],
                         "verify_certificate": False,
-                        "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",  # noqa
+                        "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",
                         "timeout": {"read": 10, "connect": 5},
                     },
                 }

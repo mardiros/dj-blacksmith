@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
 from blacksmith import (
     AbstractCollectionParser,
@@ -132,8 +132,10 @@ class AsyncClientProxy:
 
 
 class AsyncDjBlacksmithClient:
-    client_factories: Dict[str, AsyncClientFactory[Any]] = {}
-    middleware_factories: Dict[str, List[AsyncAbstractMiddlewareFactoryBuilder]] = {}
+    client_factories: ClassVar[dict[str, AsyncClientFactory[Any]]] = {}
+    middleware_factories: ClassVar[
+        dict[str, List[AsyncAbstractMiddlewareFactoryBuilder]]
+    ] = {}
 
     def __init__(self, request: HttpRequest):
         self.request = request

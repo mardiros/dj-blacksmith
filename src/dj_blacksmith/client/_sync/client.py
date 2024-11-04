@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, List, Mapping, Optional, Tuple, Type
 
 from blacksmith import (
     AbstractCollectionParser,
@@ -10,6 +10,7 @@ from blacksmith import (
     SyncClientFactory,
     SyncConsulDiscovery,
     SyncHTTPMiddleware,
+    SyncNomadDiscovery,
     SyncRouterDiscovery,
     SyncStaticDiscovery,
 )
@@ -24,10 +25,14 @@ from dj_blacksmith.client._sync.middleware_factory import (
 )
 
 
-def build_sd(settings: Mapping[str, Mapping[str, Any]]) -> SyncAbstractServiceDiscovery:
+def build_sd(
+    settings: Mapping[str, Mapping[str, Any]],
+) -> SyncAbstractServiceDiscovery:
     sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
         return SyncConsulDiscovery(**settings["consul_sd_config"])
+    elif sd_setting == "nomad":
+        return SyncNomadDiscovery(**settings["nomad_sd_config"])
     elif sd_setting == "router":
         return SyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":
@@ -127,8 +132,10 @@ class SyncClientProxy:
 
 
 class SyncDjBlacksmithClient:
-    client_factories: Dict[str, SyncClientFactory[Any]] = {}
-    middleware_factories: Dict[str, List[SyncAbstractMiddlewareFactoryBuilder]] = {}
+    client_factories: ClassVar[dict[str, SyncClientFactory[Any]]] = {}
+    middleware_factories: ClassVar[
+        dict[str, List[SyncAbstractMiddlewareFactoryBuilder]]
+    ] = {}
 
     def __init__(self, request: HttpRequest):
         self.request = request

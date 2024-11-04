@@ -283,7 +283,7 @@ async def test_build_middlewares(params: Dict[str, Any], prometheus_registry: An
                             "dj_blacksmith.AsyncCircuitBreakerMiddlewareBuilder",
                         ],
                         "verify_certificate": False,
-                        "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",  # noqa
+                        "collection_parser": "tests.unittests.fixtures.DummyCollectionParser",
                         "timeout": {"read": 10, "connect": 5},
                     },
                 }

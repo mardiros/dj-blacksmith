@@ -27,7 +27,7 @@ def _get_project_meta():
 pkg_meta = _get_project_meta()
 project = str(pkg_meta["name"])  # type: ignore
 author = str(pkg_meta["authors"][0])  # type: ignore
-copyright = author  # noqa: WPS125
+copyright = author
 
 # The short X.Y version
 version = str(pkg_meta["version"])  # type: ignore
