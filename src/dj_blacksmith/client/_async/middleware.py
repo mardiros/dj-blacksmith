@@ -1,4 +1,5 @@
 """Build Blacksmith middlewares from Django settings."""
+
 import abc
 from typing import Any, Mapping
 
@@ -52,7 +53,6 @@ class AsyncHTTPCacheMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
     """Build HTTP Cache Middleware."""
 
     def build(self) -> AsyncHTTPCacheMiddleware:
-
         settings = self.settings["http_cache"]
         cache = aioredis.from_url(settings["redis"])  # type: ignore
         policy = import_string(settings.get("policy", "blacksmith.CacheControlPolicy"))

@@ -1,4 +1,5 @@
 import uvicorn
+
 from notif.asgi import application
 
 if __name__ == "__main__":

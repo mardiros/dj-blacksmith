@@ -16,6 +16,7 @@ Including another URLconf
 from typing import List
 
 from django.urls import URLResolver, path
+
 from notif.views import get_metrics, post_notification
 
 urlpatterns: List[URLResolver] = [

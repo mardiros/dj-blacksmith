@@ -134,7 +134,6 @@ class SyncDjBlacksmithClient:
         self.request = request
 
     def __call__(self, factory_name: str = "default") -> SyncClientProxy:
-
         if factory_name not in self.client_factories:
             self.client_factories[factory_name] = client_factory(factory_name)
             self.middleware_factories[factory_name] = middleware_factories(factory_name)

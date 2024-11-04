@@ -26,7 +26,7 @@ from dj_blacksmith.client._async.middleware_factory import (
 
 
 def build_sd(
-    settings: Mapping[str, Mapping[str, Any]]
+    settings: Mapping[str, Mapping[str, Any]],
 ) -> AsyncAbstractServiceDiscovery:
     sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
@@ -139,7 +139,6 @@ class AsyncDjBlacksmithClient:
         self.request = request
 
     async def __call__(self, factory_name: str = "default") -> AsyncClientProxy:
-
         if factory_name not in self.client_factories:
             self.client_factories[factory_name] = await client_factory(factory_name)
             self.middleware_factories[factory_name] = middleware_factories(factory_name)
