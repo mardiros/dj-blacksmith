@@ -1,6 +1,15 @@
+4.0.0 - Released on 2024-11-04
+------------------------------
+* Update to blacksmith 4
+* Drop python 3.8 support
+* Replace packaging from poetry to uv / pdm
+* Update CI
+* Update license to MIT
+
 3.0.0 - Released on 2024-10-14
 ------------------------------
-* Update to blackmith 3 with nomad sidecar support
+* Update to blacksmith 3 with nomad sidecar support
+* Drop python 3.7
 
 2.0.0 - Released on 2024-10-14
 ------------------------------

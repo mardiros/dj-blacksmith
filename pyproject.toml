@@ -1,6 +1,6 @@
 [project]
 name = "dj-blacksmith"
-version = "3.0.0"
+version = "4.0.0"
 authors = [{ name = "Guillaume Gauvrit", email = "guillaume@gauvr.it" }]
 classifiers = [
     "Development Status :: 4 - Beta",
