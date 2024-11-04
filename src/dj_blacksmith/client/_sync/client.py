@@ -1,4 +1,5 @@
-from typing import Any, ClassVar, Dict, Iterable, List, Mapping, Optional, Tuple, Type
+from collections.abc import Iterable, Mapping
+from typing import Any, ClassVar, Optional
 
 from blacksmith import (
     AbstractCollectionParser,
@@ -36,7 +37,7 @@ def build_sd(
     elif sd_setting == "router":
         return SyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":
-        endpoints: Dict[Tuple[str, Optional[str]], str] = {}
+        endpoints: dict[tuple[str, Optional[str]], str] = {}
         for key, val in settings["static_sd_config"].items():
             if "/" in key:
                 srv, ver = key.rsplit("/", 1)
@@ -48,14 +49,14 @@ def build_sd(
         raise RuntimeError(f"Unkown service discovery {sd_setting}")
 
 
-def build_collection_parser(settings: Dict[str, Any]) -> Type[AbstractCollectionParser]:
+def build_collection_parser(settings: dict[str, Any]) -> type[AbstractCollectionParser]:
     cls = import_string(
         settings.get("collection_parser", "blacksmith.CollectionParser")
     )
     return cls
 
 
-def build_transport() -> Optional[Type[SyncAbstractTransport]]:
+def build_transport() -> Optional[type[SyncAbstractTransport]]:
     transport = get_transport()
     if not transport:
         return None
@@ -63,7 +64,7 @@ def build_transport() -> Optional[Type[SyncAbstractTransport]]:
     return cls
 
 
-def build_metrics(settings: Dict[str, Any]) -> PrometheusMetrics:
+def build_metrics(settings: dict[str, Any]) -> PrometheusMetrics:
     metrics = settings.get("metrics", {})
     return PrometheusMetrics(**metrics)
 
@@ -72,9 +73,9 @@ def build_middlewares(
     settings: Mapping[str, Any],
     metrics: PrometheusMetrics,
 ) -> Iterable[SyncHTTPMiddleware]:
-    middlewares: List[str] = settings.get("middlewares", [])
+    middlewares: list[str] = settings.get("middlewares", [])
     for middleware in middlewares:
-        cls: Type[SyncHTTPMiddlewareBuilder] = import_string(middleware)
+        cls: type[SyncHTTPMiddlewareBuilder] = import_string(middleware)
         yield cls(settings, metrics).build()
 
 
@@ -104,9 +105,9 @@ def client_factory(name: str = "default") -> SyncClientFactory[Any]:
 def build_middlewares_factories(
     settings: Mapping[str, Any],
 ) -> Iterable[SyncAbstractMiddlewareFactoryBuilder]:
-    middlewares: List[str] = settings.get("middleware_factories", [])
+    middlewares: list[str] = settings.get("middleware_factories", [])
     for middleware in middlewares:
-        cls: Type[SyncAbstractMiddlewareFactoryBuilder] = import_string(middleware)
+        cls: type[SyncAbstractMiddlewareFactoryBuilder] = import_string(middleware)
         yield cls(settings)
 
 
@@ -119,7 +120,7 @@ class SyncClientProxy:
     def __init__(
         self,
         client_factory: SyncClientFactory[Any],
-        middlewares: List[SyncHTTPMiddleware],
+        middlewares: list[SyncHTTPMiddleware],
     ):
         self.client_factory = client_factory
         self.middlewares = middlewares
@@ -134,7 +135,7 @@ class SyncClientProxy:
 class SyncDjBlacksmithClient:
     client_factories: ClassVar[dict[str, SyncClientFactory[Any]]] = {}
     middleware_factories: ClassVar[
-        dict[str, List[SyncAbstractMiddlewareFactoryBuilder]]
+        dict[str, list[SyncAbstractMiddlewareFactoryBuilder]]
     ] = {}
 
     def __init__(self, request: HttpRequest):

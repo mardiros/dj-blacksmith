@@ -1,4 +1,5 @@
-from typing import Any, List, Mapping, Tuple
+from collections.abc import Mapping
+from typing import Any
 
 from blacksmith import (
     AbstractCachePolicy,
@@ -28,13 +29,13 @@ class DummyCachePolicy(AbstractCachePolicy):
         return ""
 
     def get_response_cache_key(
-        self, client_name: str, path: str, req: HTTPRequest, vary: List[str]
+        self, client_name: str, path: str, req: HTTPRequest, vary: list[str]
     ):
         return ""
 
     def get_cache_info_for_response(
         self, client_name: str, path: str, req: HTTPRequest, resp: HTTPResponse
-    ) -> Tuple[int, str, List[str]]:
+    ) -> tuple[int, str, list[str]]:
         return (0, "", [])
 
 

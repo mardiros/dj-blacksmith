@@ -1,7 +1,8 @@
 """Build Blacksmith middlewares from Django settings."""
 
 import abc
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 from blacksmith import (
     PrometheusMetrics,

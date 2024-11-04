@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 from blacksmith import CacheControlPolicy, PrometheusMetrics
@@ -35,7 +35,7 @@ from dj_blacksmith.client._async.middleware import (
         },
     ],
 )
-def test_build_circuit_breaker(params: Dict[str, Any]):
+def test_build_circuit_breaker(params: dict[str, Any]):
     builder = AsyncCircuitBreakerMiddlewareBuilder(
         params["settings"], params["metrics"]
     )
@@ -58,7 +58,7 @@ def test_build_circuit_breaker(params: Dict[str, Any]):
         },
     ],
 )
-def test_build_prometheus(params: Dict[str, Any]):
+def test_build_prometheus(params: dict[str, Any]):
     builder = AsyncPrometheusMiddlewareBuilder(params["settings"], params["metrics"])
     prom = builder.build()
     assert prom.metrics == params["metrics"]
@@ -93,7 +93,7 @@ class DummyPolicy(CacheControlPolicy):
         },
     ],
 )
-def test_build_cache(params: Dict[str, Any]):
+def test_build_cache(params: dict[str, Any]):
     builder = AsyncHTTPCacheMiddlewareBuilder(params["settings"], params["metrics"])
     cache = builder.build()
     assert (
@@ -116,7 +116,7 @@ def test_build_cache(params: Dict[str, Any]):
         },
     ],
 )
-def test_add_headers(params: Dict[str, Any]):
+def test_add_headers(params: dict[str, Any]):
     builder = AsyncHTTPAddHeadersMiddlewareBuilder(
         params["settings"], params["metrics"]
     )
@@ -134,7 +134,7 @@ def test_add_headers(params: Dict[str, Any]):
         },
     ],
 )
-def test_add_bearer_token(params: Dict[str, Any]):
+def test_add_bearer_token(params: dict[str, Any]):
     builder = AsyncHTTPBearerMiddlewareBuilder(params["settings"], params["metrics"])
     cache = builder.build()
     assert cache.headers == params["expected"]

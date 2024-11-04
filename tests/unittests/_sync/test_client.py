@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 from blacksmith import (
@@ -122,7 +122,7 @@ def consul_blacksmith_cli(url: str, tok: str) -> SyncClientFactory[Any]:
         ),
     ],
 )
-def test_build_sd(params: Dict[str, Any], monkeypatch: Any):
+def test_build_sd(params: dict[str, Any], monkeypatch: Any):
     if "monkeypatch" in params:
         for key, val in params["monkeypatch"].items():
             monkeypatch.setenv(key, val)
@@ -143,7 +143,7 @@ def test_build_sd(params: Dict[str, Any], monkeypatch: Any):
         }
     ],
 )
-def test_build_sd_errors(params: Dict[str, Any]):
+def test_build_sd_errors(params: dict[str, Any]):
     with pytest.raises(RuntimeError) as ctx:
         build_sd(params["settings"])
     assert str(ctx.value) == params["expected_message"]
@@ -164,7 +164,7 @@ def test_build_sd_errors(params: Dict[str, Any]):
         },
     ],
 )
-def test_build_collection_parser(params: Dict[str, Any]):
+def test_build_collection_parser(params: dict[str, Any]):
     collection_parser = build_collection_parser(params["settings"])
     assert collection_parser is params["expected"]
 
@@ -184,7 +184,7 @@ def test_build_collection_parser(params: Dict[str, Any]):
         },
     ],
 )
-def test_build_transport(params: Dict[str, Any]):
+def test_build_transport(params: dict[str, Any]):
     with override_settings(**params["settings"]):
         transport = build_transport()
     assert transport is params["expected"]
@@ -232,7 +232,7 @@ def test_build_transport(params: Dict[str, Any]):
         },
     ],
 )
-def test_build_metrics(params: Dict[str, Any], prometheus_registry: CollectorRegistry):
+def test_build_metrics(params: dict[str, Any], prometheus_registry: CollectorRegistry):
     metrics = build_metrics(params["settings"])
     assert isinstance(metrics, PrometheusMetrics)
     assert (
@@ -261,7 +261,7 @@ def test_build_metrics(params: Dict[str, Any], prometheus_registry: CollectorReg
         },
     ],
 )
-def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
+def test_build_middlewares(params: dict[str, Any], prometheus_registry: Any):
     mdlws = build_middlewares(params["settings"], params["metrics"])
     assert [type(mdlw) for mdlw in mdlws] == params["expected"]
 
@@ -333,7 +333,7 @@ def test_build_middlewares(params: Dict[str, Any], prometheus_registry: Any):
         },
     ],
 )
-def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
+def test_client_factory(params: dict[str, Any], prometheus_registry: Any):
     with override_settings(**params["settings"]):
         cli = client_factory()
         assert cli.transport.proxies == params["expected_proxies"]
@@ -353,7 +353,7 @@ def test_client_factory(params: Dict[str, Any], prometheus_registry: Any):
         }
     ],
 )
-def test_client_factory_errors(params: Dict[str, Any]):
+def test_client_factory_errors(params: dict[str, Any]):
     with pytest.raises(RuntimeError) as ctx:
         client_factory("clicli")
     assert str(ctx.value) == params["expected_message"]
@@ -371,7 +371,7 @@ def test_client_factory_errors(params: Dict[str, Any]):
     ],
 )
 def test_reuse_client_factory(
-    params: Dict[str, Any], req: Any, prometheus_registry: Any
+    params: dict[str, Any], req: Any, prometheus_registry: Any
 ):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         dj_cli = SyncDjBlacksmithClient(req)
@@ -398,7 +398,7 @@ def test_reuse_client_factory(
         }
     ],
 )
-def test_build_middlewares_factories(params: Dict[str, Any]):
+def test_build_middlewares_factories(params: dict[str, Any]):
     factories = list(build_middlewares_factories(params["settings"]))
     assert factories == [DummyMiddlewareFactory1({}), DummyMiddlewareFactory2({})]
 
@@ -418,7 +418,7 @@ def test_build_middlewares_factories(params: Dict[str, Any]):
         }
     ],
 )
-def test_middleware_factories(params: Dict[str, Any]):
+def test_middleware_factories(params: dict[str, Any]):
     with override_settings(BLACKSMITH_CLIENT=params["settings"]):
         factories = middleware_factories()
     assert factories == [DummyMiddlewareFactory1({}), DummyMiddlewareFactory2({})]
