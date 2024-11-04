@@ -1,12 +1,12 @@
 dj-blacksmith
 =============
 
-.. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/gh-pages.yml/badge.svg
+.. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/publish-doc.yml/badge.svg
    :target: https://mardiros.github.io/dj-blacksmith/
    :alt: Documentation
 
-.. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/main.yml/badge.svg
-   :target: https://github.com/mardiros/dj-blacksmith/actions/workflows/main.yml
+.. image:: https://github.com/mardiros/dj-blacksmith/actions/workflows/tests.yml/badge.svg
+   :target: https://github.com/mardiros/dj-blacksmith/actions/workflows/tests.yml
    :alt: Continuous Integration
 
 .. image:: https://codecov.io/gh/mardiros/dj-blacksmith/branch/main/graph/badge.svg?token=GMCE9HQE98
