@@ -26,8 +26,8 @@ def _get_project_meta():
 
 pkg_meta = _get_project_meta()
 project = str(pkg_meta["name"])  # type: ignore
-author = str(pkg_meta["authors"][0])  # type: ignore
-copyright = author
+author = f"{pkg_meta['authors'][0]['name']} <{pkg_meta['authors'][0]['email']}>"
+copyright = f"{pkg_meta['authors'][0]['name']} and contributors"
 
 # The short X.Y version
 version = str(pkg_meta["version"])  # type: ignore
