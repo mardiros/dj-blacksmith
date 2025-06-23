@@ -60,9 +60,15 @@ def build_transport() -> Optional[Type[AsyncAbstractTransport]]:
     return cls
 
 
+_prom_metrics: Optional[PrometheusMetrics] = None
+
+
 def build_metrics(settings: Dict[str, Any]) -> PrometheusMetrics:
-    metrics = settings.get("metrics", {})
-    return PrometheusMetrics(**metrics)
+    global _prom_metrics
+    if _prom_metrics is None:
+        metrics = settings.get("metrics", {})
+        _prom_metrics = PrometheusMetrics(**metrics)
+    return _prom_metrics
 
 
 def build_middlewares(

@@ -58,9 +58,15 @@ def build_transport() -> Optional[Type[SyncAbstractTransport]]:
     return cls
 
 
+_prom_metrics: Optional[PrometheusMetrics] = None
+
+
 def build_metrics(settings: Dict[str, Any]) -> PrometheusMetrics:
-    metrics = settings.get("metrics", {})
-    return PrometheusMetrics(**metrics)
+    global _prom_metrics
+    if _prom_metrics is None:
+        metrics = settings.get("metrics", {})
+        _prom_metrics = PrometheusMetrics(**metrics)
+    return _prom_metrics
 
 
 def build_middlewares(
@@ -134,7 +140,6 @@ class SyncDjBlacksmithClient:
         self.request = request
 
     def __call__(self, factory_name: str = "default") -> SyncClientProxy:
-
         if factory_name not in self.client_factories:
             self.client_factories[factory_name] = client_factory(factory_name)
             self.middleware_factories[factory_name] = middleware_factories(factory_name)
