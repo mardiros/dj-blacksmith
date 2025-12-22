@@ -1,5 +1,5 @@
 from collections.abc import Iterable, Mapping
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar
 
 from blacksmith import (
     AbstractCollectionParser,
@@ -37,7 +37,7 @@ def build_sd(
     elif sd_setting == "router":
         return AsyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":
-        endpoints: dict[tuple[str, Optional[str]], str] = {}
+        endpoints: dict[tuple[str, str | None], str] = {}
         for key, val in settings["static_sd_config"].items():
             if "/" in key:
                 srv, ver = key.rsplit("/", 1)
@@ -56,7 +56,7 @@ def build_collection_parser(settings: dict[str, Any]) -> type[AbstractCollection
     return cls
 
 
-def build_transport() -> Optional[type[AsyncAbstractTransport]]:
+def build_transport() -> type[AsyncAbstractTransport] | None:
     transport = get_transport()
     if not transport:
         return None

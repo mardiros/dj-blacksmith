@@ -1,7 +1,13 @@
 default_test_suite := 'tests/unittests'
 
 install:
-    uv sync --group dev --group doc
+    uv sync --group dev --group doc --frozen
+
+update:
+    uv sync --group dev
+
+upgrade:
+    uv sync --group dev --upgrade
 
 doc:
     cd docs && uv run make html

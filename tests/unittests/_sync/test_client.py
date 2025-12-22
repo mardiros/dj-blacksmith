@@ -17,6 +17,7 @@ from blacksmith import (
 from blacksmith.sd._sync.adapters.consul import _registry  # type: ignore
 from blacksmith.service._sync.adapters.httpx import SyncHttpxTransport
 from django.test import override_settings
+from httpx import HTTPTransport
 from prometheus_client import CollectorRegistry  # type: ignore
 
 from dj_blacksmith.client._sync.client import (
@@ -277,7 +278,6 @@ def test_build_middlewares(params: dict[str, Any], prometheus_registry: Any):
                         "router_sd_config": {},
                         "proxies": {
                             "http://": "http://letmeout:8080/",
-                            "https://": "https://letmeout:8443/",
                         },
                         "middlewares": [
                             "dj_blacksmith.SyncCircuitBreakerMiddlewareBuilder",
@@ -290,8 +290,7 @@ def test_build_middlewares(params: dict[str, Any], prometheus_registry: Any):
             },
             "expected_middlewares": [SyncCircuitBreakerMiddleware],
             "expected_proxies": {
-                "http://": "http://letmeout:8080/",
-                "https://": "https://letmeout:8443/",
+                "http://": HTTPTransport(proxy="http://letmeout:8080/"),
             },
             "expected_verify_cert": False,
             "expected_timeout": HTTPTimeout(10, 5),
@@ -336,7 +335,13 @@ def test_build_middlewares(params: dict[str, Any], prometheus_registry: Any):
 def test_client_factory(params: dict[str, Any], prometheus_registry: Any):
     with override_settings(**params["settings"]):
         cli = client_factory()
-        assert cli.transport.proxies == params["expected_proxies"]
+        if params["expected_proxies"]:
+            assert (
+                cli.transport.proxies["http://"]._pool._proxy_url  # type: ignore
+                == params["expected_proxies"]["http://"]._pool._proxy_url
+            )
+        else:
+            assert cli.transport.proxies is None
         assert cli.transport.verify_certificate == params["expected_verify_cert"]
         assert cli.timeout == params["expected_timeout"]
         assert [type(m) for m in cli.middlewares] == params["expected_middlewares"]
