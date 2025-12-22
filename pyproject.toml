@@ -12,12 +12,12 @@ classifiers = [
 ]
 description = "Django Bindings for Blacksmith"
 license = { text = "MIT" }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 readme = "README.rst"
 
 dependencies = [
-    "django >=3.2,<=5",
-    "blacksmith[prometheus] >=4.0.0,<5",
+    "django >=5.0.0,<=7",
+    "blacksmith[prometheus] >=5.0.0,<6",
     "redis >=4.2.0,<5",
 ]
 
