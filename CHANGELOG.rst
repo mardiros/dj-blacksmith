@@ -1,3 +1,8 @@
+5.0.0 - Released on 2025-12-22
+------------------------------
+* Update to blacksmith 5
+* Drop python 3.9 support
+
 4.0.0 - Released on 2024-11-04
 ------------------------------
 * Update to blacksmith 4
