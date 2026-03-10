@@ -1,3 +1,7 @@
+5.0.2 - Released on 2026-03-10
+------------------------------
+* Unfreeze more redis versions.
+
 5.0.1 - Released on 2025-12-22
 ------------------------------
 * Re-add compatibility with django 4.
