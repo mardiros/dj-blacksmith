@@ -10,7 +10,15 @@ from blacksmith import (
 )
 from django.test import RequestFactory
 
+from dj_blacksmith.client import metrics
+
 from .fixtures import AsyncDummyTransport, SyncDummyTransport
+
+
+@pytest.fixture(autouse=True)
+def cleanup_prometheus():
+    yield
+    metrics._prom_metrics = None  # type: ignore
 
 
 @pytest.fixture

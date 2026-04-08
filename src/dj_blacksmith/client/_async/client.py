@@ -24,6 +24,7 @@ from dj_blacksmith.client._async.middleware import AsyncHTTPMiddlewareBuilder
 from dj_blacksmith.client._async.middleware_factory import (
     AsyncAbstractMiddlewareFactoryBuilder,
 )
+from dj_blacksmith.client.metrics import build_metrics
 
 
 def build_sd(
@@ -62,11 +63,6 @@ def build_transport() -> type[AsyncAbstractTransport] | None:
         return None
     cls = import_string(transport)
     return cls
-
-
-def build_metrics(settings: dict[str, Any]) -> PrometheusMetrics:
-    metrics = settings.get("metrics", {})
-    return PrometheusMetrics(**metrics)
 
 
 def build_middlewares(
