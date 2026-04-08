@@ -109,7 +109,7 @@ wheels = [
 
 [[package]]
 name = "blacksmith"
-version = "5.0.1"
+version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -117,9 +117,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "result" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/ab/e89149d394c7998449de2f88fa1089b2ba7accde6a2f05f3800bba0fe120/blacksmith-5.0.1.tar.gz", hash = "sha256:ba262f814b9dea446013dcbf584b4a2a7f7f78802f5ae183c8d42a8781807aaa", size = 35546, upload-time = "2025-12-19T22:06:06.063Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/6b/57b34342b79243bb0c95b6e16c6750e166ebaed049ee09c154657da9da9f/blacksmith-5.1.0.tar.gz", hash = "sha256:10dca6a3a5ca78c7b8ce0066e0a1022981a568957cd04f0e0ff63263c416e3b8", size = 42405, upload-time = "2026-02-07T15:57:02.643Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/0a/15a1433de8927dd4ce73cf693afcecb8c0b1496702834d9aa6c82059644d/blacksmith-5.0.1-py3-none-any.whl", hash = "sha256:b2e75b548a05204badc21421a4a6567235a1ac5abd2a81f61a40c8b9e18038f2", size = 63409, upload-time = "2025-12-19T22:06:04.679Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/11/2fd8b7a15afa39a2479e2bcc0a1f3a20e369efc3bba4b487b25078a7573d/blacksmith-5.1.0-py3-none-any.whl", hash = "sha256:0a1d85f3463c8ae48bd0a642f39861fc1c151624508dfd96a858e3eeaaf849d5", size = 70195, upload-time = "2026-02-07T15:57:00.017Z" },
 ]
 
 [package.optional-dependencies]
@@ -420,7 +420,7 @@ doc = [
 
 [package.metadata]
 requires-dist = [
-    { name = "blacksmith", extras = ["prometheus"], specifier = ">=5.0.0,<6" },
+    { name = "blacksmith", extras = ["prometheus"], specifier = ">=5.1.0,<6" },
     { name = "django", specifier = ">=4.0.0,<=7" },
     { name = "furo", marker = "extra == 'docs'", specifier = ">=2024.8.6" },
     { name = "redis", specifier = ">=4.2.0,<8" },
