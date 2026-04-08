@@ -1,3 +1,7 @@
+5.1.1 - Released on 2026-04-08
+------------------------------
+* Expose the the AsyncLoggingMiddleware.
+
 5.1.0 - Released on 2026-04-08
 ------------------------------
 * Bind the AsyncLoggingMiddleware.
