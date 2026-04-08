@@ -1,3 +1,7 @@
+5.1.2 - Released on 2026-04-08
+------------------------------
+* Make PrometheusMetrics a singleton to avoid duplicate timeseries.
+
 5.1.1 - Released on 2026-04-08
 ------------------------------
 * Expose the the AsyncLoggingMiddleware.
