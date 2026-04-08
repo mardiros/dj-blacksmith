@@ -1,3 +1,7 @@
+5.1.0 - Released on 2026-04-08
+------------------------------
+* Bind the AsyncLoggingMiddleware.
+
 5.0.2 - Released on 2026-03-10
 ------------------------------
 * Unfreeze more redis versions.
