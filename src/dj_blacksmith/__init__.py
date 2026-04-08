@@ -7,6 +7,7 @@ from .client._async.client import AsyncDjBlacksmithClient
 from .client._async.middleware import (
     AsyncCircuitBreakerMiddlewareBuilder,
     AsyncHTTPCacheMiddlewareBuilder,
+    AsyncLoggingMiddlewareBuilder,
     AsyncPrometheusMiddlewareBuilder,
 )
 from .client._async.middleware_factory import (
@@ -17,6 +18,7 @@ from .client._sync.client import SyncDjBlacksmithClient
 from .client._sync.middleware import (
     SyncCircuitBreakerMiddlewareBuilder,
     SyncHTTPCacheMiddlewareBuilder,
+    SyncLoggingMiddlewareBuilder,
     SyncPrometheusMiddlewareBuilder,
 )
 from .client._sync.middleware_factory import (
@@ -35,6 +37,8 @@ __all__ = [
     "SyncPrometheusMiddlewareBuilder",
     "AsyncHTTPCacheMiddlewareBuilder",
     "SyncHTTPCacheMiddlewareBuilder",
+    "AsyncLoggingMiddlewareBuilder",
+    "SyncLoggingMiddlewareBuilder",
     # Middlewares Factory
     "AsyncAbstractMiddlewareFactoryBuilder",
     "AsyncForwardHeaderFactoryBuilder",
