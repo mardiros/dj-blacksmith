@@ -17,7 +17,7 @@ readme = "README.rst"
 
 dependencies = [
     "django >=4.0.0,<=7",
-    "blacksmith[prometheus] >=5.0.0,<6",
+    "blacksmith[prometheus] >=5.1.0,<6",
     "redis >=4.2.0,<8",
 ]
 

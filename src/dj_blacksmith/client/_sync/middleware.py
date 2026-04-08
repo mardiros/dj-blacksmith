@@ -11,6 +11,7 @@ from blacksmith import (
     SyncHTTPBearerMiddleware,
     SyncHTTPCacheMiddleware,
     SyncHTTPMiddleware,
+    SyncLoggingMiddleware,
     SyncPrometheusMiddleware,
 )
 from django.utils.module_loading import import_string
@@ -67,7 +68,7 @@ class SyncHTTPCacheMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
 
 
 class SyncHTTPAddHeadersMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
-    """Add header."""
+    """Add http headers."""
 
     def build(self) -> SyncHTTPAddHeadersMiddleware:
         headers = self.settings["http_headers"]
@@ -75,8 +76,17 @@ class SyncHTTPAddHeadersMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
 
 
 class SyncHTTPBearerMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
-    """Add header."""
+    """Add bearer token header."""
 
     def build(self) -> SyncHTTPBearerMiddleware:
         headers = self.settings["bearer_token"]
         return SyncHTTPBearerMiddleware(headers)
+
+
+class SyncLoggingMiddlewareBuilder(SyncHTTPMiddlewareBuilder):
+    """Add logging."""
+
+    def build(self) -> SyncLoggingMiddleware:
+        logger = self.settings.get("logger")
+        log_response = self.settings.get("log_response")
+        return SyncLoggingMiddleware(logger=logger, log_response=log_response)

@@ -9,6 +9,7 @@ from dj_blacksmith.client._sync.middleware import (
     SyncHTTPAddHeadersMiddlewareBuilder,
     SyncHTTPBearerMiddlewareBuilder,
     SyncHTTPCacheMiddlewareBuilder,
+    SyncLoggingMiddlewareBuilder,
     SyncPrometheusMiddlewareBuilder,
 )
 
@@ -134,3 +135,29 @@ def test_add_bearer_token(params: dict[str, Any]):
     builder = SyncHTTPBearerMiddlewareBuilder(params["settings"], params["metrics"])
     cache = builder.build()
     assert cache.headers == params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {
+            "settings": {},
+            "metrics": None,
+            "expected": {"log_response": False},
+        },
+        {
+            "settings": {"log_response": False},
+            "metrics": None,
+            "expected": {"log_response": False},
+        },
+        {
+            "settings": {"log_response": True},
+            "metrics": None,
+            "expected": {"log_response": True},
+        },
+    ],
+)
+def test_add_logging(params: dict[str, Any]):
+    builder = SyncLoggingMiddlewareBuilder(params["settings"], params["metrics"])
+    cache = builder.build()
+    assert cache.log_response == params["expected"]["log_response"]

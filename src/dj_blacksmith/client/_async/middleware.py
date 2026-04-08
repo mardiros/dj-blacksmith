@@ -10,6 +10,7 @@ from blacksmith import (
     AsyncHTTPBearerMiddleware,
     AsyncHTTPCacheMiddleware,
     AsyncHTTPMiddleware,
+    AsyncLoggingMiddleware,
     AsyncPrometheusMiddleware,
     PrometheusMetrics,
 )
@@ -67,7 +68,7 @@ class AsyncHTTPCacheMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
 
 
 class AsyncHTTPAddHeadersMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
-    """Add header."""
+    """Add http headers."""
 
     def build(self) -> AsyncHTTPAddHeadersMiddleware:
         headers = self.settings["http_headers"]
@@ -75,8 +76,17 @@ class AsyncHTTPAddHeadersMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
 
 
 class AsyncHTTPBearerMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
-    """Add header."""
+    """Add bearer token header."""
 
     def build(self) -> AsyncHTTPBearerMiddleware:
         headers = self.settings["bearer_token"]
         return AsyncHTTPBearerMiddleware(headers)
+
+
+class AsyncLoggingMiddlewareBuilder(AsyncHTTPMiddlewareBuilder):
+    """Add logging."""
+
+    def build(self) -> AsyncLoggingMiddleware:
+        logger = self.settings.get("logger")
+        log_response = self.settings.get("log_response")
+        return AsyncLoggingMiddleware(logger=logger, log_response=log_response)
