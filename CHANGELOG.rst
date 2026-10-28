@@ -1,3 +1,7 @@
+5.2.0 - Released on 2026-10-28
+------------------------------
+* Improve DX, nomad_sd_config and consul_sd_config can be ignored in config.
+
 5.1.2 - Released on 2026-04-08
 ------------------------------
 * Make PrometheusMetrics a singleton to avoid duplicate timeseries.
