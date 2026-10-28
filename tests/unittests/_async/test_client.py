@@ -141,11 +141,15 @@ async def test_build_sd(params: dict[str, Any], monkeypatch: Any):
         {
             "settings": {"sd": "STATIC"},
             "expected_message": "Unkown service discovery STATIC",
-        }
+        },
+        {
+            "settings": {"sd": "static", "static_sd_config": {"srv": None}},
+            "expected_message": "Invalid value for static_sd_config srv",
+        },
     ],
 )
 async def test_build_sd_errors(params: dict[str, Any]):
-    with pytest.raises(RuntimeError) as ctx:
+    with pytest.raises(ValueError) as ctx:
         build_sd(params["settings"])
     assert str(ctx.value) == params["expected_message"]
 

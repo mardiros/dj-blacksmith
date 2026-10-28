@@ -32,9 +32,9 @@ def build_sd(
 ) -> SyncAbstractServiceDiscovery:
     sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
-        return SyncConsulDiscovery(**settings["consul_sd_config"])
+        return SyncConsulDiscovery(**settings.get("consul_sd_config", {}))
     elif sd_setting == "nomad":
-        return SyncNomadDiscovery(**settings["nomad_sd_config"])
+        return SyncNomadDiscovery(**settings.get("nomad_sd_config", {}))
     elif sd_setting == "router":
         return SyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":
@@ -44,6 +44,8 @@ def build_sd(
                 srv, ver = key.rsplit("/", 1)
             else:
                 srv, ver = key, None
+            if not val:
+                raise ValueError(f"Invalid value for static_sd_config {key}")
             endpoints[(srv, ver)] = val
         return SyncStaticDiscovery(endpoints)
     else:
