@@ -44,6 +44,8 @@ def build_sd(
                 srv, ver = key.rsplit("/", 1)
             else:
                 srv, ver = key, None
+            if not val:
+                raise ValueError(f"Invalid value for static_sd_config {key}")
             endpoints[(srv, ver)] = val
         return SyncStaticDiscovery(endpoints)
     else:

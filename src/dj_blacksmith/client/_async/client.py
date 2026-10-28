@@ -44,10 +44,12 @@ def build_sd(
                 srv, ver = key.rsplit("/", 1)
             else:
                 srv, ver = key, None
+            if not val:
+                raise ValueError(f"Invalid value for static_sd_config {key}")
             endpoints[(srv, ver)] = val
         return AsyncStaticDiscovery(endpoints)
     else:
-        raise RuntimeError(f"Unkown service discovery {sd_setting}")
+        raise ValueError(f"Unkown service discovery {sd_setting}")
 
 
 def build_collection_parser(settings: dict[str, Any]) -> type[AbstractCollectionParser]:
