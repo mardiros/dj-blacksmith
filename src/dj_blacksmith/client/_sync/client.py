@@ -32,9 +32,9 @@ def build_sd(
 ) -> SyncAbstractServiceDiscovery:
     sd_setting = settings.get("sd", "")
     if sd_setting == "consul":
-        return SyncConsulDiscovery(**settings["consul_sd_config"])
+        return SyncConsulDiscovery(**settings.get("consul_sd_config", {}))
     elif sd_setting == "nomad":
-        return SyncNomadDiscovery(**settings["nomad_sd_config"])
+        return SyncNomadDiscovery(**settings.get("nomad_sd_config", {}))
     elif sd_setting == "router":
         return SyncRouterDiscovery(**settings["router_sd_config"])
     elif sd_setting == "static":
