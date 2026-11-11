@@ -44,8 +44,7 @@ cov test_suite=default_test_suite:
     xdg-open htmlcov/index.html
 
 release major_minor_patch: test && changelog
-    uvx --with=pdm,pdm-bump --python-preference system pdm bump {{major_minor_patch}}
-    uv sync --frozen --group dev
+    uv version --bump {{major_minor_patch}}
 
 changelog:
     uv run python scripts/write_changelog.py
